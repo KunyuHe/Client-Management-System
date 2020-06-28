@@ -13,40 +13,13 @@ COMMON: &common #标识
   # 日志文件存放位置
   LOGGING_PATH: ./logs
 
-  # word报表模板文件目录
-  REPORT_TEMPLATES: ./word_templates
-
   # 报表文件目录
   REPORT_PATH: ./report
 
   # 响应消息
   RESPONSE_MESSAGE: ./config/msg.yaml
 
-  # redis配置
-  REDIS_EXPIRE: 60*60
-  REDIS_HOST: 127.0.0.1
-  REDIS_PORT: 6379
-  REDIS_DB: 1
-  #定时发送任务时间
-  FIX_PUSH_TIME:
-    - hour: 17
-    - minute: 3
-
-  # 是否开启定时任务,默认不开启
-  SCHEDULER_OPEN: False
-
-  # 定时任务配置
-  SCHEDULER_API_ENABLED: False
-  JOBS:
-    - id: my_job
-      func: app.factory:check_trade
-      trigger: cron
-      hour: 20
-      minute: 03
-    - id: my_interval_job
-      func: app.factory:check_trade
-      trigger: interval
-      seconds: 5
+  # 邮件配置
   SEND_EMAIL:
     ADDRESS: # Server Email
     AUTHCODE: # Auth Code

@@ -1,12 +1,13 @@
 import logging
 
-from app.models.model import User, Customer
+from flask import Blueprint, session, request
+
+from app.models.model import User, Client
 from app.utils.auth import Auth, login_required
 from app.utils.core import db
 from app.utils.emailsender import EmailSender
 from app.utils.response import ResMsg, ResponseCode
 from app.utils.util import model_to_dict, route, EmailTool, PhoneTool
-from flask import Blueprint, session, request
 
 bp = Blueprint("api_user", __name__, url_prefix='/user')
 logger = logging.getLogger(__name__)
@@ -17,30 +18,27 @@ def register():
     res = ResMsg()
 
     obj = request.get_json(force=True)
-    name = obj.get("name")
-    email = obj.get("email")
-    phone = obj.get("phone")
-    if not all([obj, name, email, phone]):
+    if not obj or not all(key in obj
+                          for key in ("name", "email", "phone", "password")):
         res.update(code=ResponseCode.InvalidParameter)
         return res.data
 
-    valid_email = EmailTool.check_email(email)
+    valid_email = EmailTool.check_email(obj.get("email"))
     if not valid_email:
         res.update(code=ResponseCode.InvalidEmail)
         return res.data
 
-    valid_phone = PhoneTool.check_phone(phone)
+    valid_phone = PhoneTool.check_phone(obj.get("phone"))
     if not valid_phone:
         res.update(code=ResponseCode.InvalidPhone)
         return res.data
 
-    unique_name = db.session.query(User).filter(User.name == name).count() == 0
+    unique_name = User.query.filter(User.name == obj.get("name")).count() == 0
     if not unique_name:
         res.update(code=ResponseCode.RepeatUserName)
         return res.data
 
-    user_obj = User(name=name, password=obj.get("password"),
-                    phone=phone, email=email)
+    user_obj = User(**obj)
     db.session.add(user_obj)
     db.session.commit()
 
@@ -54,13 +52,12 @@ def login():
 
     obj = request.get_json(force=True)
     name = obj.get("name")
-    password = obj.get("password")
-    if not all([obj, name, password]):
+    if not all([obj, name, obj.get("password")]):
         res.update(code=ResponseCode.InvalidParameter)
         return res.data
 
     user_obj = User.query.filter(User.name == name).first()
-    if user_obj and user_obj.password == password:
+    if user_obj and user_obj.password == obj.get("password"):
         access_token, refresh_token = Auth.encode_auth_token(user_id=name)
         data = {
             "access_token": access_token.decode("utf-8"),
@@ -116,14 +113,14 @@ def get_info():
     return res.data
 
 
-@route(bp, '/customers', methods=["GET"])
+@route(bp, '/clients', methods=["GET"])
 @login_required
-def get_customers():
+def get_clients():
     res = ResMsg()
 
     name = session["user_name"]
     user_obj = User.query.filter(User.name == name).first()
-    res.update(data=model_to_dict(user_obj.customers))
+    res.update(data=model_to_dict(user_obj.clients))
 
     return res.data
 
@@ -134,15 +131,15 @@ def send_email():
     res = ResMsg()
 
     user_name = session["user_name"]
-    customer_id = request.form.get("customer_id")
+    client_id = request.form.get("client_id")
     file = request.files['file']
-    if not all([user_name, customer_id, file]):
+    if not all([user_name, client_id, file]):
         res.update(code=ResponseCode.InvalidParameter)
         return res.data
 
     user = User.query.filter(User.name == user_name).first()
-    customer = Customer.query.filter(Customer.id == customer_id).first()
-    result = EmailSender.send_email(customer.email, user.name, user.email,
+    client = Client.query.filter(Client.id == client_id).first()
+    result = EmailSender.send_email(client.email, user.name, user.email,
                                     file.stream.read(), file.filename)
     if not result:
         res.update(code=ResponseCode.SendEmailFailed)
@@ -160,7 +157,7 @@ def test_get_all():
     """
     res = ResMsg()
 
-    users_json = [model_to_dict(user) for user in User.query.all()]
+    users_json = [model_to_dict(user) for user in User.query]
     res.update(data=users_json)
 
     return res.data
@@ -173,9 +170,9 @@ def test_remove_all():
     """
     res = ResMsg()
 
-    for user in User.query.all():
-        if user.customers:
-            user.customers.clear()
+    for user in User.query:
+        if user.clients:
+            user.clients.clear()
     User.query.delete()
     db.session.commit()
 
