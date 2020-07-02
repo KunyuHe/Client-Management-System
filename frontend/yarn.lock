@@ -3653,10 +3653,10 @@ eslint-visitor-keys@^1.0.0, eslint-visitor-keys@^1.1.0:
   resolved "https://registry.npm.taobao.org/eslint-visitor-keys/download/eslint-visitor-keys-1.2.0.tgz#74415ac884874495f78ec2a97349525344c981fa"
   integrity sha1-dEFayISHRJX3jsKpc0lSU0TJgfo=
 
-eslint@^6.7.2:
+eslint@^6.8.0:
   version "6.8.0"
-  resolved "https://registry.npm.taobao.org/eslint/download/eslint-6.8.0.tgz#62262d6729739f9275723824302fb227c8c93ffb"
-  integrity sha1-YiYtZylzn5J1cjgkMC+yJ8jJP/s=
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-6.8.0.tgz#62262d6729739f9275723824302fb227c8c93ffb"
+  integrity sha512-K+Iayyo2LtyYhDSYwz5D5QdWw0hCacNzyq1Y821Xna2xSJj7cijoLLYmLxTQgcgZ9mC61nryMy9S7GRbYpI5Ig==
   dependencies:
     "@babel/code-frame" "^7.0.0"
     ajv "^6.10.0"
@@ -8832,6 +8832,11 @@ vue-loader@^15.9.2:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
+vue-password-strength-meter@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/vue-password-strength-meter/-/vue-password-strength-meter-1.7.2.tgz#ddaae2246fb8a53fd8cdc5b1084b1d16cc401505"
+  integrity sha512-S17DsEbXciTcI0fKq1PXia7i3COM/AJOT7os8AVyGxglc5ho1EBssE+ogDa5cFh6Rn8pPgqfVCt/KBcNpgPBiA==
+
 vue-ref@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/vue-ref/-/vue-ref-2.0.0.tgz#483084d732abed11da796778a8266a3af0ea1a9c"
@@ -9242,3 +9247,8 @@ zrender@4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/zrender/-/zrender-4.3.1.tgz#baf8aa6dc8187a2f819692d7d5f9bedfa2b90fa3"
   integrity sha512-CeH2TpJeCdG0TAGYoPSAcFX2ogdug1K7LIn9UO/q9HWqQ54gWhrMAlDP9AwWYMUDhrPe4VeazQ4DW3msD96nUQ==
+
+zxcvbn@^4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/zxcvbn/-/zxcvbn-4.4.2.tgz#28ec17cf09743edcab056ddd8b1b06262cc73c30"
+  integrity sha1-KOwXzwl0PtyrBW3dixsGJizHPDA=
