@@ -1,13 +1,12 @@
 import logging
 
-from flask import Blueprint, session, request
-
 from app.models.model import User, Client
 from app.utils.auth import Auth, login_required
 from app.utils.core import db
 from app.utils.emailsender import EmailSender
 from app.utils.response import ResMsg, ResponseCode
-from app.utils.util import model_to_dict, route, EmailTool, PhoneTool
+from app.utils.util import model_to_dict, route, EmailTool
+from flask import Blueprint, session, request
 
 bp = Blueprint("api_user", __name__, url_prefix='/user')
 logger = logging.getLogger(__name__)
@@ -19,7 +18,7 @@ def register():
 
     obj = request.get_json(force=True)
     if not obj or not all(key in obj
-                          for key in ("name", "email", "phone", "password")):
+                          for key in ("name", "email", "password")):
         res.update(code=ResponseCode.InvalidParameter)
         return res.data
 
@@ -28,13 +27,8 @@ def register():
         res.update(code=ResponseCode.InvalidEmail)
         return res.data
 
-    valid_phone = PhoneTool.check_phone(obj.get("phone"))
-    if not valid_phone:
-        res.update(code=ResponseCode.InvalidPhone)
-        return res.data
-
-    unique_name = User.query.filter(User.name == obj.get("name")).count() == 0
-    if not unique_name:
+    uniq_name = User.query.filter(User.name == obj.get("name")).count() == 0
+    if not uniq_name:
         res.update(code=ResponseCode.RepeatUserName)
         return res.data
 
@@ -101,6 +95,34 @@ def refresh_token():
     return res.data
 
 
+@route(bp, '/recover', methods=["POST"])
+def recover_password():
+    res = ResMsg()
+
+    obj = request.get_json(force=True)
+    email = obj.get("email", None)
+    if not obj or not email:
+        res.update(code=ResponseCode.InvalidParameter)
+        return res.data
+
+    user_obj = User.query.filter(User.email == email).first()
+    if not user_obj:
+        res.update(code=ResponseCode.NoResourceFound)
+        return res.data
+
+    subject = "客户管理系统（CMS）用户密码恢复"
+    body = (f"用户{user_obj.name}，\n\n您好！您的密码是：{user_obj.password}。\n\n"
+            f"如果此用户密码恢复请求并非由您本人提出，请尽快联系管理员更改密码。谢谢！\n\n"
+            f"祝好，\n客户管理系统（CMS）")
+    logger.info(f"To send, {subject}, {body}")
+    result = EmailSender.send_email(user_obj.email, subject, body)
+    if not result:
+        res.update(code=ResponseCode.SendEmailFailed)
+        return res.data
+
+    return res.data
+
+
 @route(bp, '/info', methods=["GET"])
 @login_required
 def get_info():
@@ -108,7 +130,9 @@ def get_info():
 
     name = session["user_name"]
     user_obj = User.query.filter(User.name == name).first()
-    res.update(data=model_to_dict(user_obj))
+    user_json = model_to_dict(user_obj)
+    user_json['n_clients'] = len(user_obj.clients)
+    res.update(data=user_json)
 
     return res.data
 
@@ -125,22 +149,38 @@ def get_clients():
     return res.data
 
 
-@route(bp, '/email', methods=["POST"])
+@route(bp, '/email-client', methods=["POST"])
 @login_required
-def send_email():
+def email_client():
     res = ResMsg()
 
     user_name = session["user_name"]
     client_id = request.form.get("client_id")
-    file = request.files['file']
-    if not all([user_name, client_id, file]):
+    if not user_name or not client_id:
         res.update(code=ResponseCode.InvalidParameter)
         return res.data
 
-    user = User.query.filter(User.name == user_name).first()
-    client = Client.query.filter(Client.id == client_id).first()
-    result = EmailSender.send_email(client.email, user.name, user.email,
-                                    file.stream.read(), file.filename)
+    user_obj = User.query.filter(User.name == user_name).first()
+    client_obj = Client.query.filter(Client.id == client_id).first()
+    if not client_obj:
+        res.update(code=ResponseCode.NoResourceFound)
+        return res.data
+
+    subject = request.form.get("subject", None)
+    if not subject:
+        subject = "估值表"
+    body = request.form.get("body", None)
+    if not body:
+        body = (f"用户{user_obj.name}通过管理系统为您发送了估值表。请查收！"
+                f"如有任何问题，请联系{user_obj.email}。祝好！")
+
+    file = request.files.get('file', None)
+    if file:
+        result = EmailSender.send_email(client_obj.email, subject, body,
+                                        file.stream.read(), file.filename)
+    else:
+        result = EmailSender.send_email(client_obj.email, subject, body)
+
     if not result:
         res.update(code=ResponseCode.SendEmailFailed)
         return res.data

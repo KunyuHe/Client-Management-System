@@ -1,7 +1,7 @@
 import axios from 'axios'
 // import qs from 'qs'
 
-const url = 'http://0.0.0.0:5000'
+const url = 'http://127.0.0.1:5000'
 
 // 创建axios实例
 const service = axios.create({
@@ -37,7 +37,6 @@ service.interceptors.response.use(
 
 export { url }
 
-
 export function register (data) {
   return service({
     url: '/user/register',
@@ -45,7 +44,6 @@ export function register (data) {
     data: data
   })
 }
-
 
 export function login (data) {
   return service({
@@ -55,6 +53,13 @@ export function login (data) {
   })
 }
 
+export function recover (data) {
+  return service({
+    url: '/user/recover',
+    method: 'post',
+    data: data
+  })
+}
 
 export function findByUsername (params) {
   return service({
@@ -64,6 +69,13 @@ export function findByUsername (params) {
   })
 }
 
+export function userInfo (params) {
+  return service({
+    url: '/user/info',
+    method: 'get',
+    params: params
+  })
+}
 
 export function addClient (data) {
   return service({
@@ -73,7 +85,6 @@ export function addClient (data) {
   })
 }
 
-
 export function getIncomeByUser (data) {
   return service({
     url: '/client/incomes',
@@ -81,7 +92,6 @@ export function getIncomeByUser (data) {
     data: data
   })
 }
-
 
 export function findAllClients (params) {
   return service({
