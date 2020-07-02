@@ -97,22 +97,3 @@ class EmailTool(object):
             return False
         else:
             return True
-
-
-class PhoneTool(object):
-    """
-    手机号码验证工具
-    """
-
-    @staticmethod
-    def check_phone(phone):
-        """
-        验证手机号是否为中国手机号码
-        :param phone:手机号码
-        :return:
-        """
-        if len(str(phone)) == 11:
-            v_phone = re.match(r'^1[3-9][0-9]{9}$', phone)
-            if v_phone:
-                return True
-        return False
