@@ -3,27 +3,47 @@
   <h2><span>New User Registration</span></h2>
   <a-form ref="formRegister" :form="form" id="formRegister">
     <a-form-item>
-      <a-input size="large" type="text" placeholder="Username" v-decorator="['name', {rules: [{ required: true, message: 'Please enter the username.' }], validateTrigger: ['blur']}]"></a-input>
+      <a-input size="large" type="text" placeholder="Username" v-decorator="['name',
+                      {rules: [{ required: true,
+                                 message: 'Please enter the username.' }],
+                      validateTrigger: ['blur']}]">
+      </a-input>
     </a-form-item>
 
     <a-form-item>
-      <a-input size="large" type="text" placeholder="Email" v-decorator="['email', {rules: [{ required: true, type: 'email', message: 'Please enter a valid email address.' }], validateTrigger: ['change', 'blur']}]"></a-input>
+      <a-input size="large" type="text" placeholder="Email" v-decorator="['email',
+                      {rules: [{ required: true,
+                       type: 'email',
+                       message: 'Please enter a valid email address.' }],
+                      validateTrigger: ['change', 'blur']}]">
+      </a-input>
     </a-form-item>
 
     <a-form-item>
-      <a-input-password size="large" @click="handlePasswordInputClick" placeholder="Password"
-          v-decorator="['password', {rules: [{ required: true, message: 'At least 6 digits. Case sensitive.'}, { validator: this.handlePasswordLevel }], validateTrigger: ['change', 'blur']}]"></a-input-password>
+      <a-input-password size="large" @click="handlePasswordInputClick" placeholder="Password" v-decorator="['password',
+                      {rules: [{ required: true,
+                                 message: 'At least 6 digits. Case sensitive.'},
+                               { validator: this.handlePasswordLevel }],
+                      validateTrigger: ['change', 'blur']}]">
+      </a-input-password>
     </a-form-item>
 
     <a-form-item>
-      <a-input-password size="large" placeholder="Confirm Password" v-decorator="['password2', {rules: [{ required: true, message: 'Please enter the password again.' }, { validator: this.handlePasswordCheck }], validateTrigger: ['change', 'blur']}]">
+      <a-input-password size="large" placeholder="Confirm Password" v-decorator="['password2',
+                      {rules: [{ required: true,
+                                 message: 'Please enter the password again.' },
+                               { validator: this.handlePasswordCheck }],
+                      validateTrigger: ['change', 'blur']}]">
       </a-input-password>
     </a-form-item>
 
     <a-form-item>
       <a-button size="large" type="primary" htmlType="submit" class="register-button" :loading="registerBtn" @click.stop.prevent="handleSubmit" :disabled="registerBtn">Register
       </a-button>
-      <router-link class="login" :to="{ name: 'Login' }">Login to an existing account</router-link>
+
+      <router-link class="login" :to="{ name: 'Login' }">
+        Login to an existing account
+      </router-link>
     </a-form-item>
 
   </a-form>
@@ -44,6 +64,7 @@ const levelClass = {
   2: 'warning',
   3: 'success'
 }
+
 export default {
   name: 'Register',
   components: {},
@@ -95,6 +116,7 @@ export default {
         callback(new Error('Please include at least two out of following: letters, numbers, and symbols.'))
       }
     },
+
     handlePasswordCheck (rule, value, callback) {
       const password = this.form.getFieldValue('password')
       console.log('value', value)
@@ -106,13 +128,11 @@ export default {
       }
       callback()
     },
+
     handlePasswordInputClick () {
-      if (!this.isMobile()) {
-        this.state.passwordLevelChecked = true
-        return
-      }
       this.state.passwordLevelChecked = false
     },
+
     handleSubmit () {
       console.log('Request submitted.')
       const {
@@ -134,7 +154,13 @@ export default {
           delete registerParams.password2
           console.log(registerParams)
           register(registerParams)
-            .then((res) => this.registerSuccess(res))
+            .then((res) => {
+              if (res.data.code === 40005) {
+                return this.$message.error(res.data.msg)
+              } else {
+                this.registerSuccess(res)
+              }
+            })
             .catch(err => this.requestFailed(err))
             .finally(() => {
               state.loginBtn = false
@@ -144,6 +170,7 @@ export default {
         }
       })
     },
+
     registerSuccess (res) {
       console.log(res)
       this.$router.push({
@@ -157,6 +184,7 @@ export default {
       }, 1000)
       this.isLoginError = false
     },
+
     requestFailed (err) {
       this.$notification.error({
         message: 'Error',
@@ -173,6 +201,7 @@ export default {
   }
 }
 </script>
+
 <style lang="less">
 .user-register {
     &.error {
