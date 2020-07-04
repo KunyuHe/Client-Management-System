@@ -3,7 +3,11 @@
   <h2><span>New User Registration</span></h2>
   <a-form ref="formRegister" :form="form" id="formRegister">
     <a-form-item>
-      <a-input size="large" type="text" placeholder="Username" v-decorator="['name',
+      <a-input
+        size="large"
+        type="text"
+        placeholder="Username"
+        v-decorator="['name',
                       {rules: [{ required: true,
                                  message: 'Please enter the username.' }],
                       validateTrigger: ['blur']}]">
@@ -11,7 +15,11 @@
     </a-form-item>
 
     <a-form-item>
-      <a-input size="large" type="text" placeholder="Email" v-decorator="['email',
+      <a-input
+        size="large"
+        type="text"
+        placeholder="Email"
+        v-decorator="['email',
                       {rules: [{ required: true,
                        type: 'email',
                        message: 'Please enter a valid email address.' }],
@@ -20,7 +28,11 @@
     </a-form-item>
 
     <a-form-item>
-      <a-input-password size="large" @click="handlePasswordInputClick" placeholder="Password" v-decorator="['password',
+      <a-input-password
+        size="large"
+        placeholder="Password"
+        @click="handlePasswordInputClick"
+        v-decorator="['password',
                       {rules: [{ required: true,
                                  message: 'At least 6 digits. Case sensitive.'},
                                { validator: this.handlePasswordLevel }],
@@ -29,16 +41,29 @@
     </a-form-item>
 
     <a-form-item>
-      <a-input-password size="large" placeholder="Confirm Password" v-decorator="['password2',
-                      {rules: [{ required: true,
-                                 message: 'Please enter the password again.' },
-                               { validator: this.handlePasswordCheck }],
-                      validateTrigger: ['change', 'blur']}]">
+      <a-input-password
+      size="large"
+      placeholder="Confirm Password"
+      v-decorator="['password2',
+                    {rules: [{ required: true,
+                               message: 'Please enter the password again.' },
+                             { validator: this.handlePasswordCheck }],
+                     validateTrigger: ['change', 'blur']}
+                   ]">
       </a-input-password>
     </a-form-item>
 
     <a-form-item>
-      <a-button size="large" type="primary" htmlType="submit" class="register-button" :loading="registerBtn" @click.stop.prevent="handleSubmit" :disabled="registerBtn">Register
+      <a-button
+        size="large"
+        type="primary"
+        htmlType="submit"
+        class="register-button"
+        :loading="registerBtn"
+        :disabled="registerBtn"
+        @click.stop.prevent="handleSubmit"
+      >
+        Register
       </a-button>
 
       <router-link class="login" :to="{ name: 'Login' }">
