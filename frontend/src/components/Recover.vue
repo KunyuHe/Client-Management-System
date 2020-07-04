@@ -4,13 +4,34 @@
   <a-form ref="formRecover" :form="form" id="formRecover">
 
     <a-form-item>
-      <a-input size="large" type="text" placeholder="Email" v-decorator="['email', {rules: [{ required: true, type: 'email', message: 'Please enter a valid email address.' }], validateTrigger: ['change', 'blur']}]"></a-input>
+      <a-input
+        size="large"
+        type="text"
+        placeholder="Email"
+        v-decorator="['email',
+                      {rules: [{ required: true,
+                                 type: 'email',
+                                 message: 'Please enter a valid email address.' }],
+                       validateTrigger: ['change', 'blur']}]">
+      </a-input>
     </a-form-item>
 
     <a-form-item>
-      <a-button size="large" type="primary" htmlType="submit" class="recover-button" :loading="recoverBtn" @click.stop.prevent="handleSubmit" :disabled="recoverBtn">Send Email
+      <a-button
+        size="large"
+        type="primary"
+        htmlType="submit"
+        class="recover-button"
+        :loading="recoverBtn"
+        :disabled="recoverBtn"
+        @click.stop.prevent="handleSubmit"
+      >
+        Send Email
       </a-button>
-      <router-link class="login" :to="{ name: 'Login' }">Login to an existing account</router-link>
+
+      <router-link class="login" :to="{ name: 'Login' }">
+        Login to an existing account
+      </router-link>
     </a-form-item>
 
   </a-form>
@@ -59,7 +80,13 @@ export default {
           }
           console.log(recoverParams)
           recover(recoverParams)
-            .then((res) => this.recoverSuccess(res))
+            .then((res) => {
+              if (res.data.code !== 0) {
+                return this.$message.error(res.data.msg)
+              } else {
+                this.recoverSuccess(res)
+              }
+            })
             .catch(err => this.requestFailed(err))
             .finally(() => {
               state.loginBtn = false
@@ -69,6 +96,7 @@ export default {
         }
       })
     },
+
     recoverSuccess (res) {
       console.log(res)
       this.$router.push({
@@ -82,6 +110,7 @@ export default {
       }, 1000)
       this.isLoginError = false
     },
+
     requestFailed (err) {
       this.$notification.error({
         message: 'Error',

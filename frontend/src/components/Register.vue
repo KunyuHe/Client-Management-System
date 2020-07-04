@@ -180,7 +180,7 @@ export default {
           console.log(registerParams)
           register(registerParams)
             .then((res) => {
-              if (res.data.code === 40005) {
+              if (res.data.code !== 0) {
                 return this.$message.error(res.data.msg)
               } else {
                 this.registerSuccess(res)
