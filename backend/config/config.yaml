@@ -13,18 +13,23 @@ COMMON: &common #标识
   # 日志文件存放位置
   LOGGING_PATH: ./logs
 
+  # word报表模板文件目录
+  REPORT_TEMPLATES: ./word_templates
+
   # 报表文件目录
   REPORT_PATH: ./report
 
   # 响应消息
   RESPONSE_MESSAGE: ./config/msg.yaml
 
-  # 邮件配置
   SEND_EMAIL:
-    ADDRESS: # Server Email
-    AUTHCODE: # Auth Code
-    PORT: # Server Email Auth
-    HOST: # Server Email Host
+    ADDRESS: '1218686033@qq.com'
+    AUTHCODE: 'mjwfepunbfkxjfci'
+    PORT: 465
+    HOST: 'smtp.qq.com'
+
+  # 自定义字体路径
+  SIM_SUN: ./font
 
 
 
