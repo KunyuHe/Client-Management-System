@@ -106,6 +106,7 @@ export default {
     },
 
     handleChange (info) {
+      console.log(info)
       if (info.file.status === 'done') {
         const res = info.file.response
         if (res.code !== 0) {
@@ -115,8 +116,8 @@ export default {
           this.fileCnt = res.data.cnt
           this.fileName = res.data.filename
         }
-      } else if (info.file.status === 'error') {
-        this.$message.error(`${info.file.name} upload failed.`)
+      } else if (info.file.status === 'uploading') {
+        this.$message.loading(`Uploading ${info.file.name}`)
       }
     },
 

@@ -116,7 +116,6 @@ def recover_password():
             f"您好！您的密码是：{user_obj.password}。\n\n"
             f"如果此用户密码恢复请求并非由您本人提出，请尽快联系管理员更改密码。谢谢！\n\n"
             f"祝好，\n客户管理系统（CMS）")
-    logger.info(f"To send, {subject}, {body}")
     result = EmailSender.send_email(user_obj.email, subject, body)
     if not result:
         res.update(code=ResponseCode.SendEmailFailed)

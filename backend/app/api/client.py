@@ -120,16 +120,8 @@ def email_client():
         res.update(code=ResponseCode.AccessNotAuthorized)
         return res.data
 
-    subject = request.form.get("subject", None)
-    if not subject or subject == "undefined":
-        subject = "估值表"
-    body = request.form.get("body", None)
-    if not body or body == "undefined":
-        body = (f"尊敬的{client_obj.name}:\n\n"
-                f"用户{user_obj.name}通过管理系统为您发送了估值表。请查收！\n\n"
-                f"如有任何问题，请联系{user_obj.email}。\n\n"
-                f"祝好，\n客户管理系统（CMS）")
-
+    subject = request.form.get("subject", "")
+    body = request.form.get("body", "")
     file = request.files.get('file', None)
     if file:
         result = EmailSender.send_email(client_obj.email, subject, body,

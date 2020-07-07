@@ -9,7 +9,7 @@
             Check Income
           </a-button>
         </a-col>
-        <a-col :offset="2" :span="2">
+        <a-col :offset="3" :span="2">
           <a-button type="primary" @click="selectedClient = record, draftVisible = true">
             Draft Email
           </a-button>
@@ -39,7 +39,7 @@
             accept = ".xlsx"
             :multiple="false"
             :headers="headers"
-            :data="{id: selectedClient.id, subject: form.getFieldValue('subject'), body: form.getFieldValue('body')}"
+            :data="{id: selectedClient.id, subject: subject, body: body}"
             :action="emailUrl"
             @change="handleChange">
             <p class="ant-upload-drag-icon">
@@ -83,16 +83,6 @@ const columns = [{
   }
 }]
 
-const defaultBody = `尊敬的<客户名>:
-
-用户<用户名>通过管理系统为您发送了估值表。请查收！
-
-如有任何问题，请联系<用户邮箱>。
-
-祝好，
-客户管理系统（CMS）
-`
-
 const xValue = []
 
 const yValue = []
@@ -112,7 +102,6 @@ export default {
       chartVisible: false,
       draftVisible: false,
       defaultSubject: '估值表',
-      defaultBody,
       emailUrl: url + '/client/email',
       xValue,
       yValue
@@ -127,6 +116,35 @@ export default {
       } else {
         return this.clients
       }
+    },
+
+    defaultBody () {
+      return `尊敬的${this.selectedClient.name}:
+
+用户${this.currUser.name}通过管理系统为您发送了估值表。请查收！
+
+如有任何问题，请联系${this.currUser.email}。
+
+祝好，
+客户管理系统（CMS)`
+    },
+
+    subject () {
+      const formSubject = this.form.getFieldValue('subject')
+      if (typeof formSubject === 'undefined') {
+        return this.defaultSubject
+      } else {
+        return formSubject
+      }
+    },
+
+    body () {
+      const formBody = this.form.getFieldValue('body')
+      if (typeof formBody === 'undefined') {
+        return this.defaultBody
+      } else {
+        return formBody
+      }
     }
   },
   watch: {
@@ -138,6 +156,7 @@ export default {
     }
   },
   mounted () {
+    this.findUser()
     this.findClients()
   },
   methods: {
