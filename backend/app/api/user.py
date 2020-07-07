@@ -151,47 +151,6 @@ def get_clients():
     return res.data
 
 
-@route(bp, '/email-client', methods=["POST"])
-@login_required
-def email_client():
-    res = ResMsg()
-
-    user_name = session["user_name"]
-    client_id = request.form.get("client_id")
-    if not user_name or not client_id:
-        res.update(code=ResponseCode.InvalidParameter)
-        return res.data
-
-    user_obj = User.query.filter(User.name == user_name).first()
-    client_obj = Client.query.filter(Client.id == client_id).first()
-    if not client_obj:
-        res.update(code=ResponseCode.NoResourceFound)
-        return res.data
-
-    subject = request.form.get("subject", None)
-    if not subject:
-        subject = "估值表"
-    body = request.form.get("body", None)
-    if not body:
-        body = (f"尊敬的{client_obj.name}:\n\n"
-                f"用户{user_obj.name}通过管理系统为您发送了估值表。请查收！\n\n"
-                f"如有任何问题，请联系{user_obj.email}。\n\n"
-                f"祝好，\n客户管理系统（CMS）")
-
-    file = request.files.get('file', None)
-    if file:
-        result = EmailSender.send_email(client_obj.email, subject, body,
-                                        file.stream.read(), file.filename)
-    else:
-        result = EmailSender.send_email(client_obj.email, subject, body)
-
-    if not result:
-        res.update(code=ResponseCode.SendEmailFailed)
-        return res.data
-
-    return res.data
-
-
 @route(bp, '/upload', methods=["POST"])
 @login_required
 def upload():
