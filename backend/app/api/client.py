@@ -1,13 +1,12 @@
 import logging
 
-from flask import Blueprint, session
-from flask import request
-
 from app.models.model import User, Client, Income
 from app.utils.auth import login_required
 from app.utils.core import db
 from app.utils.response import ResponseCode, ResMsg
 from app.utils.util import route, model_to_dict, EmailTool
+from flask import Blueprint, session
+from flask import request
 
 bp = Blueprint("api_client", __name__, url_prefix='/client')
 logger = logging.getLogger(__name__)
@@ -70,7 +69,7 @@ def remove():
     return res.data
 
 
-@route(bp, '/incomes', methods=["GET"])
+@route(bp, '/incomes', methods=["POST"])
 @login_required
 def get_incomes():
     res = ResMsg()
@@ -86,9 +85,16 @@ def get_incomes():
         res.update(ResponseCode.NoResourceFound)
         return res.data
 
+    user_obj = User.query.filter(User.name == session["user_name"]).first()
+    if user_obj not in client_obj.users:
+        res.update(ResponseCode.AccessNotAuthorized)
+        return res.data
+
     incomes_obj = Income.query.filter(Income.client_id == client_id).order_by(
         Income.date)
-    res.update(data=model_to_dict(incomes_obj))
+    income_json = model_to_dict(incomes_obj)
+    res.update(data={key: [pair[key] for pair in income_json]
+                     for key in ('date', 'value')})
     return res.data
 
 

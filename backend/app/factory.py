@@ -1,13 +1,11 @@
-import atexit
 import logging
 import logging.config
 import os
-import platform
 
 import yaml
 from app.api.router import router
 from app.task.trade import TradeNamespace
-from app.utils.core import JSONEncoder, db, scheduler
+from app.utils.core import JSONEncoder, db
 from app.utils.emailsender import EmailSender
 from flask import Flask, Blueprint
 from flask_cors import CORS
@@ -19,7 +17,7 @@ logger = logging.getLogger(__name__)
 def create_app(config_name, config_path=None):
     app = Flask(__name__)
     # 处理跨域
-    CORS(app, resources=r'/*')
+    CORS(app, resources=r"/*")
     # 读取配置文件
     if not config_path:
         pwd = os.getcwd()
@@ -46,10 +44,6 @@ def create_app(config_name, config_path=None):
     # 注册数据库连接
     db.app = app
     db.init_app(app)
-
-    # 启动定时任务
-    if app.config.get("SCHEDULER_OPEN"):
-        scheduler_init(app)
 
     # 日志文件目录
     if not os.path.exists(app.config['LOGGING_PATH']):
@@ -124,46 +118,3 @@ def register_api(app, routers):
                                      view_func=view_func, methods=['DELETE', ])
             except Exception as e:
                 raise ValueError(e)
-
-
-def scheduler_init(app):
-    """
-    保证系统只启动一次定时任务
-    :param app:
-    :return:
-    """
-    if platform.system() != 'Windows':
-        fcntl = __import__("fcntl")
-        f = open('scheduler.lock', 'wb')
-        try:
-            fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            scheduler.init_app(app)
-            scheduler.start()
-            app.logger.debug('Scheduler Started,---------------')
-        except:
-            pass
-
-        def unlock():
-            fcntl.flock(f, fcntl.LOCK_UN)
-            f.close()
-
-        atexit.register(unlock)
-    else:
-        msvcrt = __import__('msvcrt')
-        f = open('scheduler.lock', 'wb')
-        try:
-            msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)
-            scheduler.init_app(app)
-            scheduler.start()
-            app.logger.debug('Scheduler Started,----------------')
-        except:
-            pass
-
-        def _unlock_file():
-            try:
-                f.seek(0)
-                msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
-            except:
-                pass
-
-        atexit.register(_unlock_file)

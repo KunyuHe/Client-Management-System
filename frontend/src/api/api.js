@@ -61,14 +61,6 @@ export function recover (data) {
   })
 }
 
-export function findByUsername (params) {
-  return service({
-    url: '/user/username',
-    method: 'get',
-    params: params
-  })
-}
-
 export function userInfo (params) {
   return service({
     url: '/user/info',
@@ -77,26 +69,35 @@ export function userInfo (params) {
   })
 }
 
-export function addClient (data) {
+export function getFile (params) {
   return service({
-    url: '/client/add',
+    url: '/user/download',
+    method: 'get',
+    params: params,
+    responseType: 'blob'
+  })
+}
+
+export function getClients (params) {
+  return service({
+    url: '/user/clients',
+    method: 'get',
+    params: params
+  })
+}
+
+export function getIncomes (data) {
+  return service({
+    url: '/client/incomes',
     method: 'post',
     data: data
   })
 }
 
-export function getIncomeByUser (data) {
+export function emailClient (data) {
   return service({
-    url: '/client/incomes',
-    method: 'get',
+    url: '/user/email-client',
+    method: 'post',
     data: data
-  })
-}
-
-export function findAllClients (params) {
-  return service({
-    url: '/user/clients',
-    method: 'get',
-    params: params
   })
 }

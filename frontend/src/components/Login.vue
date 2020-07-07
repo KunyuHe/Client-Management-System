@@ -1,32 +1,66 @@
 <template>
 <div class="main">
-  <a-form id="formLogin" class="user-layout-login" ref="formLogin" :form="form" @submit="handleSubmit">
-    <a-alert v-if="isLoginError" type="error" showIcon style="margin-bottom: 24px;" message="Wrong username or password!" />
+  <a-form
+    id="formLogin"
+    class="user-layout-login"
+    ref="formLogin"
+    :form="form"
+    @submit="handleSubmit">
+    <a-alert
+      v-if="isLoginError"
+      type="error"
+      showIcon
+      style="margin-bottom: 24px;" message="Wrong username or password!" />
     <a-form-item>
-      <a-input size="large" type="text" placeholder="Username" v-decorator="[
-                'name',
-                {rules: [{ required: true, message: 'Please enter the username!' }, { validator: handleUsernameOrEmail }], validateTrigger: 'change'}
-              ]">
+      <a-input
+        size="large"
+        type="text"
+        placeholder="Username"
+        v-decorator="['name',
+                      {rules: [{ required: true,
+                                 message: 'Please enter the username!' },
+                               { validator: handleUsernameOrEmail }],
+                       validateTrigger: 'change'}]"
+      >
         <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }" />
       </a-input>
     </a-form-item>
 
     <a-form-item>
-      <a-input size="large" type="password" autocomplete="false" placeholder="Password" v-decorator="[
-                'password',
-                {rules: [{ required: true, message: 'Please enter the password!' }], validateTrigger: 'blur'}
-              ]">
+      <a-input
+        size="large"
+        type="password"
+        autocomplete="false"
+        placeholder="Password"
+        v-decorator="['password',
+                      {rules: [{ required: true,
+                                 message: 'Please enter the password!' }],
+                       validateTrigger: 'blur'}]"
+      >
         <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }" />
       </a-input>
     </a-form-item>
 
     <a-form-item style="margin-top:24px">
-      <a-button size="large" type="primary" htmlType="submit" class="login-button" :loading="state.loginBtn" :disabled="state.loginBtn">Login</a-button>
+      <a-button
+        size="large"
+        type="primary"
+        htmlType="submit"
+        class="login-button"
+        :loading="state.loginBtn"
+        :disabled="state.loginBtn"
+      >
+        Login
+      </a-button>
     </a-form-item>
 
     <div class="user-login-other">
-      <router-link :to="{ name: 'Recover', params: { username: username} }">Forgot password?</router-link>
-      <router-link :to="{ name: 'Register' }">Register</router-link>
+      <router-link :to="{ name: 'Recover', params: { username: username} }">
+        Forgot password?
+      </router-link>
+      <router-link :to="{ name: 'Register' }">
+        Register
+      </router-link>
     </div>
   </a-form>
 

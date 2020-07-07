@@ -2,12 +2,12 @@ from datetime import datetime, timedelta
 from functools import wraps
 
 import jwt
-from app.utils.code import ResponseCode
+from app.utils.response import ResponseCode
 from app.utils.util import ResMsg
 from flask import current_app, request, session
 
 
-class Auth(object):
+class Auth:
     key = 'super-man$&123das%qzq'
 
     @classmethod

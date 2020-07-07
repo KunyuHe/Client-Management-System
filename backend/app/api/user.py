@@ -4,8 +4,9 @@ from app.models.model import User, Client
 from app.utils.auth import Auth, login_required
 from app.utils.core import db
 from app.utils.emailsender import EmailSender
+from app.utils.filetool import FileTool
 from app.utils.response import ResMsg, ResponseCode
-from app.utils.util import model_to_dict, route, EmailTool
+from app.utils.util import model_to_dict, EmailTool, route
 from flask import Blueprint, session, request
 
 bp = Blueprint("api_user", __name__, url_prefix='/user')
@@ -111,7 +112,8 @@ def recover_password():
         return res.data
 
     subject = "客户管理系统（CMS）用户密码恢复"
-    body = (f"用户{user_obj.name}，\n\n您好！您的密码是：{user_obj.password}。\n\n"
+    body = (f"用户{user_obj.name}：\n\n"
+            f"您好！您的密码是：{user_obj.password}。\n\n"
             f"如果此用户密码恢复请求并非由您本人提出，请尽快联系管理员更改密码。谢谢！\n\n"
             f"祝好，\n客户管理系统（CMS）")
     logger.info(f"To send, {subject}, {body}")
@@ -171,8 +173,10 @@ def email_client():
         subject = "估值表"
     body = request.form.get("body", None)
     if not body:
-        body = (f"用户{user_obj.name}通过管理系统为您发送了估值表。请查收！"
-                f"如有任何问题，请联系{user_obj.email}。祝好！")
+        body = (f"尊敬的{client_obj.name}:\n\n"
+                f"用户{user_obj.name}通过管理系统为您发送了估值表。请查收！\n\n"
+                f"如有任何问题，请联系{user_obj.email}。\n\n"
+                f"祝好，\n客户管理系统（CMS）")
 
     file = request.files.get('file', None)
     if file:
@@ -185,6 +189,31 @@ def email_client():
         res.update(code=ResponseCode.SendEmailFailed)
         return res.data
 
+    return res.data
+
+
+@route(bp, '/upload', methods=["POST"])
+@login_required
+def upload():
+    res = ResMsg()
+
+    name = session["user_name"]
+    file = request.files.get('file', None)
+    file_tool = FileTool(name)
+    file_tool.logger = logger
+
+    return file_tool.save(file, res)
+
+
+@route(bp, '/download', methods=["GET"])
+def download():
+    res = ResMsg()
+
+    name = session["user_name"]
+    file_tool = FileTool(name)
+    file_tool.logger = logger
+
+    res.update(data=file_tool.get())
     return res.data
 
 

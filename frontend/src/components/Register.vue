@@ -115,15 +115,12 @@ export default {
   methods: {
     handlePasswordLevel (rule, value, callback) {
       let level = 0
-      // 判断这个字符串中有没有数字
       if (/[0-9]/.test(value)) {
         level++
       }
-      // 判断字符串中有没有字母
       if (/[a-zA-Z]/.test(value)) {
         level++
       }
-      // 判断字符串中有没有特殊符号
       if (/[^0-9a-zA-Z_]/.test(value)) {
         level++
       }
@@ -159,7 +156,6 @@ export default {
     },
 
     handleSubmit () {
-      console.log('Request submitted.')
       const {
         form: {
           validateFields
@@ -169,7 +165,6 @@ export default {
       validateFields({
         force: true
       }, (err, values) => {
-        console.log('Request validated.')
         if (!err) {
           state.passwordLevelChecked = false
           console.log(values)

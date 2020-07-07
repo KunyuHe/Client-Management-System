@@ -1,8 +1,24 @@
-from app.utils.code import ResponseCode
 from flask import request, current_app
 
 
-class ResMsg(object):
+class ResponseCode:
+    Success = 0
+    Fail = -1
+    NoResourceFound = 40001
+    InvalidParameter = 40002
+    AccountOrPassWordErr = 40003
+    PleaseSignIn = 40004
+    RepeatUserName = 40005
+    InvalidEmail = 40006
+    SendEmailFailed = 40007
+    NoFileFound = 40008
+    FileExtensionNotAllowed = 40009
+    FileSizeTooLarge = 40010
+    StorageFull = 40011
+    AccessNotAuthorized = 40012
+
+
+class ResMsg:
     """
     封装响应文本
     """

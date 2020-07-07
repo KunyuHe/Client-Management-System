@@ -1,9 +1,14 @@
 import re
 from collections import Iterable
 from functools import wraps
+from pathlib import Path
 
 from app.utils.response import ResMsg
 from flask import jsonify
+
+
+def get_root_dir():
+    return Path(__file__).parent.parent.parent.parent
 
 
 def model_to_dict(result):
@@ -64,30 +69,7 @@ def route(bp, *args, **kwargs):
     return decorator
 
 
-def view_route(f):
-    def decorator(*args, **kwargs):
-        rv = f(*args, **kwargs)
-        if isinstance(rv, (int, float)):
-            res = ResMsg()
-            res.update(data=rv)
-            return jsonify(res.data)
-        elif isinstance(rv, tuple):
-            if len(rv) >= 3:
-                return jsonify(rv[0]), rv[1], rv[2]
-            else:
-                return jsonify(rv[0]), rv[1]
-        elif isinstance(rv, dict):
-            return jsonify(rv)
-        elif isinstance(rv, bytes):
-            rv = rv.decode('utf-8')
-            return jsonify(rv)
-        else:
-            return jsonify(rv)
-
-    return decorator
-
-
-class EmailTool(object):
+class EmailTool:
     @staticmethod
     def check_email(email):
         v_email = re.match((r"^([A-Za-z0-9_\-\.\u4e00-\u9fa5])+\@"
