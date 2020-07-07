@@ -93,11 +93,3 @@ export function getIncomes (data) {
     data: data
   })
 }
-
-export function emailClient (data) {
-  return service({
-    url: '/user/email-client',
-    method: 'post',
-    data: data
-  })
-}

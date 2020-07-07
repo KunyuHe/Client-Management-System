@@ -3,6 +3,7 @@ import logging
 from app.models.model import User, Client, Income
 from app.utils.auth import login_required
 from app.utils.core import db
+from app.utils.emailsender import EmailSender
 from app.utils.response import ResponseCode, ResMsg
 from app.utils.util import route, model_to_dict, EmailTool
 from flask import Blueprint, session
@@ -82,12 +83,12 @@ def get_incomes():
 
     client_obj = Client.query.filter(Client.id == client_id).first()
     if not client_obj:
-        res.update(ResponseCode.NoResourceFound)
+        res.update(code=ResponseCode.NoResourceFound)
         return res.data
 
     user_obj = User.query.filter(User.name == session["user_name"]).first()
     if user_obj not in client_obj.users:
-        res.update(ResponseCode.AccessNotAuthorized)
+        res.update(code=ResponseCode.AccessNotAuthorized)
         return res.data
 
     incomes_obj = Income.query.filter(Income.client_id == client_id).order_by(
@@ -95,6 +96,51 @@ def get_incomes():
     income_json = model_to_dict(incomes_obj)
     res.update(data={key: [pair[key] for pair in income_json]
                      for key in ('date', 'value')})
+    return res.data
+
+
+@route(bp, '/email', methods=["POST"])
+@login_required
+def email_client():
+    res = ResMsg()
+
+    user_name = session["user_name"]
+    client_id = request.form.get("id")
+    logger.info(request.form)
+    if not user_name or not client_id:
+        res.update(code=ResponseCode.InvalidParameter)
+        return res.data
+
+    user_obj = User.query.filter(User.name == user_name).first()
+    client_obj = Client.query.filter(Client.id == client_id).first()
+    if not client_obj:
+        res.update(code=ResponseCode.NoResourceFound)
+        return res.data
+    if user_obj not in client_obj.users:
+        res.update(code=ResponseCode.AccessNotAuthorized)
+        return res.data
+
+    subject = request.form.get("subject", None)
+    if not subject or subject == "undefined":
+        subject = "估值表"
+    body = request.form.get("body", None)
+    if not body or body == "undefined":
+        body = (f"尊敬的{client_obj.name}:\n\n"
+                f"用户{user_obj.name}通过管理系统为您发送了估值表。请查收！\n\n"
+                f"如有任何问题，请联系{user_obj.email}。\n\n"
+                f"祝好，\n客户管理系统（CMS）")
+
+    file = request.files.get('file', None)
+    if file:
+        result = EmailSender.send_email(client_obj.email, subject, body,
+                                        file.stream.read(), file.filename)
+    else:
+        result = EmailSender.send_email(client_obj.email, subject, body)
+
+    if not result:
+        res.update(code=ResponseCode.SendEmailFailed)
+        return res.data
+
     return res.data
 
 

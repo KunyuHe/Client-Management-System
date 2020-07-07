@@ -5,12 +5,12 @@
     <a-table :rowKey="record => record.id" :columns="columns" :data-source="resultQuery" :pagination="{ pageSize: 10 }">
       <span slot="action" slot-scope="text, record">
         <a-col :span="2">
-          <a-button type="primary" @click="showChart(record)">
+          <a-button type="primary" @click="selectedClient = record, showChart(record)">
             Check Income
           </a-button>
         </a-col>
         <a-col :offset="2" :span="2">
-          <a-button type="primary" @click="draftVisible=true">
+          <a-button type="primary" @click="selectedClient = record, draftVisible = true">
             Draft Email
           </a-button>
         </a-col>
@@ -19,24 +19,36 @@
   </a-card>
 
   <div>
-    <a-modal :title="'Client ' + selectedClient + ' Income Time Series'" :visible.sync="chartVisible" @ok="chartVisible = false" @cancel="chartVisible = false" :height="800" :width="1300">
+    <a-modal :title="'Client ' + selectedClient.name + ' Income Time Series'" :visible.sync="chartVisible" @ok="chartVisible = false" @cancel="chartVisible = false" :height="800" :width="1300">
       <div ref="incomeSeries" :style="{height: '800px', width: '1200px'}"></div>
     </a-modal>
 
-    <a-modal :visible.sync="draftVisible" :title="'Email Client '+ selectedClient" @ok="draftVisible = false" @cancel="draftVisible = false" :width="500">
-      <a-form :form="form" @submit="handleCusSubmit">
+    <a-modal :visible.sync="draftVisible" :title="'Email Client '+ selectedClient.name" @cancel="draftVisible = false, clearForm()" @ok="draftVisible = false, clearForm()" :width="500">
+      <a-form :form="form">
         <a-form-item label="Subject">
           <a-input :placeholder="defaultSubject" v-decorator="['subject']"/>
         </a-form-item>
 
         <a-form-item label="Body">
-          <a-textarea :placeholder="defaultBody" v-decorator="['body']" :rows="10"/>
+          <a-textarea :placeholder="defaultBody" v-decorator="['body']" :rows="8"/>
         </a-form-item>
 
-        <a-form-item>
-          <a-button block type="primary" html-type="submit">
-            Send Email
-          </a-button>
+        <a-form-item label="Attach and Send Email">
+          <a-upload-dragger
+            name="file"
+            accept = ".xlsx"
+            :multiple="false"
+            :headers="headers"
+            :data="{id: selectedClient.id, subject: form.getFieldValue('subject'), body: form.getFieldValue('body')}"
+            :action="emailUrl"
+            @change="handleChange">
+            <p class="ant-upload-drag-icon">
+              <a-icon type="inbox" />
+            </p>
+            <p class="ant-upload-text">
+              Attach File and Send Email
+            </p>
+          </a-upload-dragger>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -49,7 +61,8 @@
 import {
   userInfo,
   getClients,
-  getIncomes
+  getIncomes,
+  url
 } from '../api/api'
 
 const columns = [{
@@ -87,6 +100,7 @@ const yValue = []
 export default {
   data () {
     return {
+      form: this.$form.createForm(this),
       headers: {
         Authorization: window.sessionStorage.getItem('Authorization')
       },
@@ -94,11 +108,12 @@ export default {
       clients: [],
       columns,
       searchQuery: null,
-      selectedClient: '',
+      selectedClient: { name: '' },
       chartVisible: false,
       draftVisible: false,
       defaultSubject: '估值表',
       defaultBody,
+      emailUrl: url + '/client/email',
       xValue,
       yValue
     }
@@ -164,7 +179,6 @@ export default {
           if (res.data.code === 0) {
             this.xValue = res.data.data.date
             this.yValue = res.data.data.value
-            this.selectedClient = record.name
           } else {
             return this.$message.error(res.data.msg)
           }
@@ -287,6 +301,25 @@ export default {
       this.checkIncomes(record)
       this.chartVisible = true
       this.openEchart()
+    },
+
+    handleChange (info) {
+      if (info.file.status === 'done') {
+        const res = info.file.response
+        if (res.code !== 0) {
+          this.$message.error(res.msg)
+        } else {
+          this.$message.success('Email successfully sent.')
+          this.draftVisible = false
+          this.clearForm()
+        }
+      } else if (info.file.status === 'uploading') {
+        this.$message.loading('Sending email. Please wait.')
+      }
+    },
+
+    clearForm () {
+      this.form.resetFields()
     }
   }
 }

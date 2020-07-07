@@ -104,6 +104,7 @@ export default {
           console.log(err)
         })
     },
+
     handleChange (info) {
       if (info.file.status === 'done') {
         const res = info.file.response
