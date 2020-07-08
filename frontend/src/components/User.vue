@@ -1,11 +1,11 @@
 <template>
 <div style="height:100%" class="main user-layout-user">
   <div style="padding:30px;">
-    <a-card hoverable :bordered="false">
+    <a-card hoverable title='用户信息' :bordered="false">
       <a-row :gutter="16">
         <a-col :span="8">
           <a-card hoverable :bordered="false">
-            <a-card-meta title="Number of Clients">
+            <a-card-meta title="客户数量">
               <a-avatar slot="avatar" shape="square" :size="90" :style="{ backgroundColor: '#00245D', fontSize: '30px'}">{{ currUser.name }}
               </a-avatar>
               <a-statistic slot="description" :value="currUser.n_clients" class="demo-class" />
@@ -20,7 +20,7 @@
   </div>
 
   <div style="padding:0 30px 30px;">
-    <a-card hoverable title="Document Processing" style="height:100%" :bordered="false">
+    <a-card hoverable title="文件处理" style="height:100%" :bordered="false">
       <a-row :gutter="16">
         <a-col :span="8">
           <a-card hoverable :bordered="false">
@@ -36,27 +36,16 @@
                 <a-icon type="inbox" />
               </p>
               <p class="ant-upload-text">
-                Click or drag file to this area to upload
+                点击或者拖拽上传Excel文件
               </p>
             </a-upload-dragger>
             <a-card-meta
-              title="Files Uploaded"
+              title="已经上传的文件总数"
               :description="fileCnt">
             </a-card-meta>
           </a-card>
         </a-col>
 
-        <a-col :offset="8" :span="8">
-          <a-card hoverable :bordered="false">
-            <a-button
-              type="primary"
-              icon="download"
-              :headers="headers"
-              @click="handleDownload(fileName)">
-              Download File
-            </a-button>
-          </a-card>
-        </a-col>
       </a-row>
     </a-card>
   </div>
@@ -77,13 +66,13 @@ export default {
   },
   data () {
     return {
-      currUser: { name: 'User', n_clients: 0 },
+      currUser: { name: '用户', n_clients: 0 },
       headers: {
         Authorization: window.sessionStorage.getItem('Authorization')
       },
       websock: null,
       uploadUrl: url + '/user/upload',
-      fileCnt: 'Pending',
+      fileCnt: '上传文件后显示',
       fileName: '',
       downloadUrl: url + '/user/download'
     }

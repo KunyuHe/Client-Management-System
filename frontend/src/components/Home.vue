@@ -23,25 +23,29 @@
         <span style="margin-right:24px">
           <a-avatar shape="square" icon="user" :style="{backgroundColor: '#00245D'}" />
         </span>
+
         <a-menu slot="overlay">
           <a-menu-item>
             <router-link @click="saveIndex(1)" :to="{path:'/home/user'}">
-              User Information
+              用户中心
             </router-link>
           </a-menu-item>
           <a-menu-item>
             <a href="#remind" @click="openNotification()">
-              Notifications
+              交易需求提醒
             </a>
           </a-menu-item>
           <a-menu-item>
-            <a @click="logout">Log Out</a>
+            <a @click="logout">
+              退出登录
+            </a>
           </a-menu-item>
         </a-menu>
       </a-dropdown>
+
     </a-layout-header>
     <a-layout-content>
-      <router-view/>
+      <router-view />
     </a-layout-content>
   </a-layout>
 </a-layout>
@@ -64,35 +68,43 @@ export default {
         index: 1,
         icon: 'user',
         url: '/home/user',
-        title: 'User Information'
+        title: '用户中心'
       },
       {
         index: 2,
         icon: 'usergroup-delete',
         url: '/home/client',
-        title: 'Client Management'
+        title: '客户管理'
       }
       ],
       notification: null,
       currUser: null
     }
   },
+
   watch: {
     currUser: {
       handler (newVal, oldVal) {
-        this.$socket.emit('join', { user: this.currUser })
+        this.$socket.emit('join', {
+          user: this.currUser
+        })
       },
       deep: true
     }
   },
+
   created () {
     this.findUser()
   },
+
   mounted () {
     const index = window.sessionStorage.getItem('index')
     this.saveIndex(index)
-    this.$socket.emit('hi', { subscribe: true })
+    this.$socket.emit('hi', {
+      subscribe: true
+    })
   },
+
   sockets: { // 通过vue实例对象sockets实现组件中的事件监听
     connect () { // socket的connect事件
     },
@@ -102,6 +114,7 @@ export default {
       this.openNotification()
     }
   },
+
   methods: {
     findUser () {
       userInfo()
@@ -131,24 +144,26 @@ export default {
     openNotification () {
       if (this.notification !== null) {
         this.$notification.info({
-          message: 'Trading Request',
+          message: '交易需求提醒',
           description: this.notification,
           style: {
             border: '3px solid lightblue'
           },
           duration: 0
         })
-        this.notification = null
       } else {
         this.$notification.warning({
-          message: '无新消息！',
+          message: '暂无新的交易需求！',
           duration: 3
         })
+        this.notification = null
       }
     }
   },
   destroyed () {
-    this.$socket.emit('leave', { user: this.currUser })
+    this.$socket.emit('leave', {
+      user: this.currUser
+    })
     this.$socket.emit('disconnect')
   }
 }

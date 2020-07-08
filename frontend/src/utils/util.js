@@ -1,7 +1,7 @@
 export function timeFix () {
   const time = new Date()
   const hour = time.getHours()
-  return hour <= 12 ? 'Good Morning' : hour <= 18 ? 'Good Afternoon' : 'Good Evening'
+  return hour <= 12 ? '早上好' : hour <= 18 ? '下午好' : '晚上好'
 }
 
 export function welcome () {

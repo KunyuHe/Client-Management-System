@@ -15,10 +15,10 @@
       <a-input
         size="large"
         type="text"
-        placeholder="Username"
+        placeholder="用户名"
         v-decorator="['name',
                       {rules: [{ required: true,
-                                 message: 'Please enter the username!' },
+                                 message: '请输入用户名！' },
                                { validator: handleUsernameOrEmail }],
                        validateTrigger: 'change'}]"
       >
@@ -31,10 +31,10 @@
         size="large"
         type="password"
         autocomplete="false"
-        placeholder="Password"
+        placeholder="密码"
         v-decorator="['password',
                       {rules: [{ required: true,
-                                 message: 'Please enter the password!' }],
+                                 message: '请输入密码！' }],
                        validateTrigger: 'blur'}]"
       >
         <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }" />
@@ -50,16 +50,16 @@
         :loading="state.loginBtn"
         :disabled="state.loginBtn"
       >
-        Login
+        登录
       </a-button>
     </a-form-item>
 
     <div class="user-login-other">
       <router-link :to="{ name: 'Recover', params: { username: username} }">
-        Forgot password?
+        忘记密码?
       </router-link>
       <router-link :to="{ name: 'Register' }">
-        Register
+        注册
       </router-link>
     </div>
   </a-form>
@@ -147,13 +147,13 @@ export default {
         setTimeout(() => {
           this.$notification.success({
             message: username,
-            description: `${timeFix()}, welcome back!`
+            description: `${timeFix()}，欢迎回来！`
           })
         }, 1000)
         this.isLoginError = false
       } else {
         this.$notification.error({
-          message: 'Login attempt failed.',
+          message: '登录失败',
           description: res.data.msg
         })
       }
@@ -162,7 +162,7 @@ export default {
       this.isLoginError = true
       this.$notification.error({
         message: 'Error',
-        description: ((err.response || {}).data || {}).message || 'Your request was rejected. Try again later.',
+        description: ((err.response || {}).data || {}).message || '服务器未响应！请稍后再试。',
         duration: 4
       })
     }

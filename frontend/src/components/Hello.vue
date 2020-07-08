@@ -6,12 +6,12 @@
         <div class="helloBox">
             <div style="padding-bottom:50px">
                 <img src="../assets/logo.png" alt="logo">
-                <span class="title">Client Management System</span>
+                <span class="title">客户管理系统（CMS）</span>
             </div>
           <router-view />
         </div>
       </a-layout-content>
-      <a-layout-footer>Client Management System<br/>&copy;2020 CITIC Securities</a-layout-footer>
+      <a-layout-footer>客户管理系统（CMS）<br/>&copy;2020 中信证券股权衍生品业务线</a-layout-footer>
     </a-layout>
   </div>
 </template>

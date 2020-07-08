@@ -1,17 +1,16 @@
 <template>
 <div class="main user-layout-recover">
-  <h2>Password Recovery</h2>
   <a-form ref="formRecover" :form="form" id="formRecover">
 
     <a-form-item>
       <a-input
         size="large"
         type="text"
-        placeholder="Email"
+        placeholder="邮箱"
         v-decorator="['email',
                       {rules: [{ required: true,
                                  type: 'email',
-                                 message: 'Please enter a valid email address.' }],
+                                 message: '请输入有效的邮箱地址！' }],
                        validateTrigger: ['change', 'blur']}]">
       </a-input>
     </a-form-item>
@@ -26,11 +25,11 @@
         :disabled="recoverBtn"
         @click.stop.prevent="handleSubmit"
       >
-        Send Email
+        发送邮件以找回密码
       </a-button>
 
       <router-link class="login" :to="{ name: 'Login' }">
-        Login to an existing account
+        使用已有账号登录
       </router-link>
     </a-form-item>
 
@@ -62,7 +61,6 @@ export default {
   },
   methods: {
     handleSubmit () {
-      console.log('Request submitted.')
       const {
         form: {
           validateFields
@@ -72,13 +70,10 @@ export default {
       validateFields({
         force: true
       }, (err, values) => {
-        console.log('Request validated.')
         if (!err) {
-          console.log(values)
           const recoverParams = {
             ...values
           }
-          console.log(recoverParams)
           recover(recoverParams)
             .then((res) => {
               if (res.data.code !== 0) {
@@ -104,8 +99,8 @@ export default {
       })
       setTimeout(() => {
         this.$notification.success({
-          message: 'Email Sent',
-          description: `${timeFix()}, please check you email and login with the correct password.`
+          message: '找回密码邮件已发送',
+          description: `${timeFix()}，请检查您的收件箱以取回登录密码！`
         })
       }, 1000)
       this.isLoginError = false
@@ -114,7 +109,7 @@ export default {
     requestFailed (err) {
       this.$notification.error({
         message: 'Error',
-        description: ((err.response || {}).data || {}).message || 'Your request was rejected. Please try again later.',
+        description: ((err.response || {}).data || {}).message || '服务器未响应！请稍后再试。',
         duration: 4
       })
       this.recoverBtn = false

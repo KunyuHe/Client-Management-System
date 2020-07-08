@@ -1,15 +1,14 @@
 <template>
 <div class="main user-layout-register">
-  <h2><span>New User Registration</span></h2>
   <a-form ref="formRegister" :form="form" id="formRegister">
     <a-form-item>
       <a-input
         size="large"
         type="text"
-        placeholder="Username"
+        placeholder="用户名"
         v-decorator="['name',
                       {rules: [{ required: true,
-                                 message: 'Please enter the username.' }],
+                                 message: '请输入用户名！' }],
                       validateTrigger: ['blur']}]">
       </a-input>
     </a-form-item>
@@ -18,11 +17,11 @@
       <a-input
         size="large"
         type="text"
-        placeholder="Email"
+        placeholder="邮箱"
         v-decorator="['email',
                       {rules: [{ required: true,
                        type: 'email',
-                       message: 'Please enter a valid email address.' }],
+                       message: '请输入有效的邮箱地址！' }],
                       validateTrigger: ['change', 'blur']}]">
       </a-input>
     </a-form-item>
@@ -30,11 +29,11 @@
     <a-form-item>
       <a-input-password
         size="large"
-        placeholder="Password"
+        placeholder="密码"
         @click="handlePasswordInputClick"
         v-decorator="['password',
                       {rules: [{ required: true,
-                                 message: 'At least 6 digits. Case sensitive.'},
+                                 message: '至少6位，区分大小写！'},
                                { validator: this.handlePasswordLevel }],
                       validateTrigger: ['change', 'blur']}]">
       </a-input-password>
@@ -43,10 +42,10 @@
     <a-form-item>
       <a-input-password
       size="large"
-      placeholder="Confirm Password"
+      placeholder="确认密码"
       v-decorator="['password2',
                     {rules: [{ required: true,
-                               message: 'Please enter the password again.' },
+                               message: '请再次输入密码！' },
                              { validator: this.handlePasswordCheck }],
                      validateTrigger: ['change', 'blur']}
                    ]">
@@ -63,11 +62,11 @@
         :disabled="registerBtn"
         @click.stop.prevent="handleSubmit"
       >
-        Register
+        注册
       </a-button>
 
       <router-link class="login" :to="{ name: 'Login' }">
-        Login to an existing account
+        使用已有账号登录
       </router-link>
     </a-form-item>
 
@@ -135,13 +134,12 @@ export default {
         if (level === 0) {
           this.state.percent = 10
         }
-        callback(new Error('Please include at least two out of following: letters, numbers, and symbols.'))
+        callback(new Error('请至少包括以下中的两种：字母，数字和符号。'))
       }
     },
 
     handlePasswordCheck (rule, value, callback) {
       const password = this.form.getFieldValue('password')
-      console.log('value', value)
       if (value === undefined) {
         callback(new Error('Please enter the password.'))
       }
@@ -167,12 +165,10 @@ export default {
       }, (err, values) => {
         if (!err) {
           state.passwordLevelChecked = false
-          console.log(values)
           const registerParams = {
             ...values
           }
           delete registerParams.password2
-          console.log(registerParams)
           register(registerParams)
             .then((res) => {
               if (res.data.code !== 0) {
@@ -192,14 +188,13 @@ export default {
     },
 
     registerSuccess (res) {
-      console.log(res)
       this.$router.push({
         path: '/hello/login'
       })
       setTimeout(() => {
         this.$notification.success({
-          message: 'Welcome',
-          description: `${timeFix()}, you are successfully registered!`
+          message: '欢迎',
+          description: `${timeFix()}，您已成功注册！`
         })
       }, 1000)
       this.isLoginError = false
@@ -208,7 +203,7 @@ export default {
     requestFailed (err) {
       this.$notification.error({
         message: 'Error',
-        description: ((err.response || {}).data || {}).message || 'Your request was rejected. Please try again later.',
+        description: ((err.response || {}).data || {}).message || '服务器未响应！请稍后再试。',
         duration: 4
       })
       this.registerBtn = false
@@ -216,7 +211,6 @@ export default {
   },
   watch: {
     'state.passwordLevel' (val) {
-      console.log(val)
     }
   }
 }
