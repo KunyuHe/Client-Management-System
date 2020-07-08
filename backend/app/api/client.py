@@ -146,6 +146,7 @@ def remove_all():
 
     for client in Client.query:
         client.users.clear()
+        client.incomes.clear()
     Client.query.delete()
     db.session.commit()
 

@@ -5,6 +5,7 @@
       <img src="../assets/logo_min.png" width="40px" alt="">
       <h1 v-if="!collapsed">CMS</h1>
     </div>
+
     <a-menu theme="dark" mode="inline" :selectedKeys="activePath" :default-selected-keys="activePath">
       <a-menu-item v-for="item in userMenus" :key="item.index" @click="saveIndex(item.index)">
         <a-icon :type="item.icon" />
@@ -13,14 +14,14 @@
       </a-menu-item>
     </a-menu>
   </a-layout-sider>
+
   <a-layout>
     <a-layout-header style="background: #fff; padding: 0 15px 0 0; display:flex; justify-content: space-between; align-items: center;">
       <a-icon class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="() => (collapsed = !collapsed)" />
+
       <a-dropdown placement="bottomCenter">
         <span style="margin-right:24px">
-          <a-badge :count="remindCount" dot>
-            <a-avatar shape="square" icon="user" :style="{backgroundColor: '#00245D'}"/>
-          </a-badge>
+          <a-avatar shape="square" icon="user" :style="{backgroundColor: '#00245D'}" />
         </span>
         <a-menu slot="overlay">
           <a-menu-item>
@@ -29,7 +30,9 @@
             </router-link>
           </a-menu-item>
           <a-menu-item>
-            <a-badge :dot="isHave"><a href="#remind" @click="openNotification(), isHave = false">Notifications</a></a-badge>
+            <a href="#remind" @click="openNotification()">
+              Notifications
+            </a>
           </a-menu-item>
           <a-menu-item>
             <a @click="logout">Log Out</a>
@@ -38,18 +41,22 @@
       </a-dropdown>
     </a-layout-header>
     <a-layout-content>
-      <router-view v-on:listenToHome="listenFromUser" />
+      <router-view/>
     </a-layout-content>
   </a-layout>
 </a-layout>
 </template>
+
 <script>
-var activePath = ['1']
+import {
+  userInfo
+} from '../api/api'
+
+const activePath = ['1']
+
 export default {
   data () {
     return {
-      remindCount: 1,
-      isHave: false,
       collapsed: false,
       activePath,
       currMenu: '',
@@ -64,63 +71,85 @@ export default {
         icon: 'usergroup-delete',
         url: '/home/client',
         title: 'Client Management'
-      }],
-      receiveData: null
+      }
+      ],
+      notification: null,
+      currUser: null
     }
   },
-  created () {},
+  watch: {
+    currUser: {
+      handler (newVal, oldVal) {
+        this.$socket.emit('join', { user: this.currUser })
+      },
+      deep: true
+    }
+  },
+  created () {
+    this.findUser()
+  },
   mounted () {
     const index = window.sessionStorage.getItem('index')
     this.saveIndex(index)
-    this.$socket.emit('hi', {
-      subscribe: true
-    }) // 在这里触发connect事件
+    this.$socket.emit('hi', { subscribe: true })
   },
   sockets: { // 通过vue实例对象sockets实现组件中的事件监听
-    connect: function () { // socket的connect事件
-      console.log('socket connected from Page--------------')
+    connect () { // socket的connect事件
     },
+
     hi (data) { // 后端按主题名推送的消息数据
-      this.remindCount = 1
-      this.isHave = true
-      this.receiveData = data
+      this.notification = data
       this.openNotification()
-      console.log(data)
     }
   },
   methods: {
-    listenFromUser (data) {
-      this.remindCount = data
+    findUser () {
+      userInfo()
+        .then((res) => {
+          if (res.data.code === 0) {
+            this.currUser = res.data.data
+          } else {
+            return this.$message.error(res.data.msg)
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
+
     saveIndex (index) {
       window.sessionStorage.setItem('index', index)
       this.activePath = []
       this.activePath.push(index)
     },
+
     logout () {
       window.sessionStorage.clear()
       this.$router.push('/hello/login')
     },
+
     openNotification () {
-      if (this.remindCount > 0) {
-        this.$notification.success({
-          message: '新消息',
-          description: this.receiveData,
+      if (this.notification !== null) {
+        this.$notification.info({
+          message: 'Trading Request',
+          description: this.notification,
           style: {
-            border: '1px solid green'
+            border: '3px solid lightblue'
           },
           duration: 0
         })
+        this.notification = null
       } else {
         this.$notification.warning({
           message: '无新消息！',
-          duration: 1
+          duration: 3
         })
       }
     }
   },
   destroyed () {
-    this.websock.close() // 离开路由之后断开websocket连接
+    this.$socket.emit('leave', { user: this.currUser })
+    this.$socket.emit('disconnect')
   }
 }
 </script>

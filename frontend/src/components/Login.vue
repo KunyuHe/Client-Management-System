@@ -100,7 +100,6 @@ export default {
         state.loginType = 0
       } else {
         this.username = value
-        console.log(value)
         state.loginType = 1
       }
       callback()
@@ -120,11 +119,9 @@ export default {
         force: true
       }, (err, values) => {
         if (!err) {
-          console.log('login form', values)
           const loginParams = {
             ...values
           }
-          console.log(loginParams)
           login(loginParams)
             .then((res) => this.loginSuccess(res))
             .catch(err => this.requestFailed(err))
@@ -139,7 +136,6 @@ export default {
       })
     },
     loginSuccess (res) {
-      console.log(res)
       if (res.data.code === 0) {
         const token = res.data.data.access_token
         const username = res.data.data.user.name

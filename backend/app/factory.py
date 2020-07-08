@@ -16,8 +16,10 @@ logger = logging.getLogger(__name__)
 
 def create_app(config_name, config_path=None):
     app = Flask(__name__)
+
     # 处理跨域
     CORS(app, resources=r"/*")
+
     # 读取配置文件
     if not config_path:
         pwd = os.getcwd()
@@ -72,7 +74,7 @@ def create_socketio(app):
     socketio = SocketIO(app, cors_allowed_origins="*")
     socketio.on_namespace(TradeNamespace("/flask"))
     TradeNamespace.set_socketio(socketio)
-    TradeNamespace.set_send_time(app.config.get("FIX_PUSH_TIME"))
+
     return socketio
 
 
@@ -87,9 +89,9 @@ def read_yaml(config_name, config_path):
         if config_name in conf.keys():
             return conf[config_name.upper()]
         else:
-            raise KeyError('未找到对应的配置信息')
+            raise KeyError('未找到对应的配置信息！')
     else:
-        raise ValueError('请输入正确的配置名称或配置文件路径')
+        raise ValueError('请输入正确的配置名称或配置文件路径！')
 
 
 def register_api(app, routers):

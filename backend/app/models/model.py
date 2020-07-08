@@ -30,6 +30,7 @@ class Client(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     name = db.Column(db.String(50), nullable=False, unique=True)
     email = db.Column(db.String(50), nullable=False)
+    trade = db.Column(db.Boolean, default=False)
 
     incomes = db.relationship('Income', cascade="all,delete", backref="client")
 

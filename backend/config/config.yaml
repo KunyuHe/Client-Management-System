@@ -1,6 +1,7 @@
 COMMON: &common #标识
   DEBUG: False
   SECRET_KEY: insecure
+
   # 页码设置
   DEFAULT_PAGE_INDEX: 1
   DEFAULT_PAGE_SIZE: 10
@@ -8,8 +9,10 @@ COMMON: &common #标识
   # 数据库连接
   SQLALCHEMY_DATABASE_URI: 'postgresql+psycopg2://postgres:test@localhost/test'
   SQLALCHEMY_TRACK_MODIFICATIONS: False
+
   # 日志配置文件路径
   LOGGING_CONFIG_PATH: ./config/logging.yaml
+
   # 日志文件存放位置
   LOGGING_PATH: ./logs
 
@@ -27,9 +30,6 @@ COMMON: &common #标识
     AUTHCODE: 'mjwfepunbfkxjfci'
     PORT: 465
     HOST: 'smtp.qq.com'
-
-  # 自定义字体路径
-  SIM_SUN: ./font
 
 
 

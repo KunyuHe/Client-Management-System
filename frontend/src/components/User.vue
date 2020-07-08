@@ -81,8 +81,9 @@ export default {
       headers: {
         Authorization: window.sessionStorage.getItem('Authorization')
       },
+      websock: null,
       uploadUrl: url + '/user/upload',
-      fileCnt: 0,
+      fileCnt: 'Pending',
       fileName: '',
       downloadUrl: url + '/user/download'
     }
