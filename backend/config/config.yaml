@@ -1,13 +1,13 @@
 COMMON: &common #标识
   DEBUG: False
-  SECRET_KEY: insecure
+  SECRET_KEY: <your-key>
 
   # 页码设置
   DEFAULT_PAGE_INDEX: 1
   DEFAULT_PAGE_SIZE: 10
 
   # 数据库连接
-  SQLALCHEMY_DATABASE_URI: 'postgresql+psycopg2://postgres:test@localhost/test'
+  SQLALCHEMY_DATABASE_URI: 'postgresql+psycopg2://<username>:<password>@<your_ip_address>:<your_port>/<your_db_name>'
   SQLALCHEMY_TRACK_MODIFICATIONS: False
 
   # 日志配置文件路径
@@ -25,11 +25,11 @@ COMMON: &common #标识
   # 响应消息
   RESPONSE_MESSAGE: ./config/msg.yaml
 
-  SEND_EMAIL:
-    ADDRESS: '1218686033@qq.com'
-    AUTHCODE: 'mjwfepunbfkxjfci'
-    PORT: 465
-    HOST: 'smtp.qq.com'
+  SEND_EMAIL: # Configure with your email host
+    ADDRESS:
+    AUTHCODE:
+    PORT:
+    HOST:
 
 
 
@@ -39,9 +39,8 @@ DEVELOPMENT: &development
 
 STAGING: &staging
   <<: *common
-  SECRET_KEY: sortasecure
+  SECRET_KEY: <your-key>
 
 PRODUCTION: &production
   <<: *common
-  SECRET_KEY: mdd1##$$%^!DSA#FDSF
-  REDIS_HOST: flask_redis
+  SECRET_KEY: <your-key>
