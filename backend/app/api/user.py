@@ -173,34 +173,3 @@ def download():
 
     res.update(data=file_tool.get())
     return res.data
-
-
-# TODO: add admin for the following
-@route(bp, '/testGetAll', methods=["GET"])
-def test_get_all():
-    """
-    测试登陆保护下获取数据
-    :return:
-    """
-    res = ResMsg()
-
-    users_json = [model_to_dict(user) for user in User.query]
-    res.update(data=users_json)
-
-    return res.data
-
-
-@route(bp, '/testRemoveAll', methods=["DELETE"])
-def test_remove_all():
-    """
-    移除所有用户以及多对多关系
-    """
-    res = ResMsg()
-
-    for user in User.query:
-        if user.clients:
-            user.clients.clear()
-    User.query.delete()
-    db.session.commit()
-
-    return res.data

@@ -133,32 +133,3 @@ def email_client():
         res.update(code=ResponseCode.SendEmailFailed)
 
     return res.data
-
-
-# TODO: Add admin role
-@route(bp, '/testRemoveAll', methods=["DELETE"])
-def remove_all():
-    """
-    移除所有客户以及多对多关系
-    """
-    res = ResMsg()
-
-    for client in Client.query:
-        client.users.clear()
-        client.incomes.clear()
-    Client.query.delete()
-    db.session.commit()
-
-    return res.data
-
-
-@route(bp, '/testGetAll', methods=["GET"])
-def get_all():
-    res = ResMsg()
-
-    clients_json = [{**model_to_dict(client),
-                     'users': model_to_dict(client.users)}
-                    for client in Client.query]
-    res.update(data=clients_json)
-
-    return res.data
