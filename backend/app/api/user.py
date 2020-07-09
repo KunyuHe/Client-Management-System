@@ -1,6 +1,6 @@
 import logging
 
-from app.models.model import User, Client
+from app.models.model import User
 from app.utils.auth import Auth, login_required
 from app.utils.core import db
 from app.utils.emailsender import EmailSender

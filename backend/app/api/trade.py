@@ -4,7 +4,7 @@ from app.models.model import Client
 from app.utils.core import db
 from app.utils.response import ResponseCode, ResMsg
 from app.utils.util import route
-from flask import Blueprint, session
+from flask import Blueprint
 from flask import request
 
 bp = Blueprint("api_trade", __name__, url_prefix='/trade')
