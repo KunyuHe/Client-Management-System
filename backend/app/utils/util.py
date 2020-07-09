@@ -48,17 +48,14 @@ def route(bp, *args, **kwargs):
                 res.update(data=rv)
                 return jsonify(res.data)
             # 响应函数返回元组
-            elif isinstance(rv, tuple):
+            if isinstance(rv, tuple):
                 # 判断是否为多个参数
                 if len(rv) >= 3:
                     return jsonify(rv[0]), rv[1], rv[2]
                 else:
                     return jsonify(rv[0]), rv[1]
-            # 响应函数返回字典
-            elif isinstance(rv, dict):
-                return jsonify(rv)
             # 响应函数返回字节
-            elif isinstance(rv, bytes):
+            if isinstance(rv, bytes):
                 rv = rv.decode('utf-8')
             return jsonify(rv)
 
