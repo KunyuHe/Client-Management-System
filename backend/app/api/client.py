@@ -131,7 +131,6 @@ def email_client():
 
     if not result:
         res.update(code=ResponseCode.SendEmailFailed)
-        return res.data
 
     return res.data
 
