@@ -1,8 +1,8 @@
 # Client Management System (Flask & VueJs)
 
-<a href="https://codeclimate.com/github/KunyuHe/Client-Management-Webserver/maintainability"><img src="https://api.codeclimate.com/v1/badges/94c8f996bf201cbb0b17/maintainability" /></a> [![Codacy Badge](https://app.codacy.com/project/badge/Grade/9a564f70557341fc8135319fd258d361)](https://www.codacy.com/manual/kunyuhe/Client-Management-Webserver?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KunyuHe/Client-Management-Webserver&amp;utm_campaign=Badge_Grade)
+<a href="https://codeclimate.com/github/KunyuHe/Client-Management-System/maintainability"><img src="https://api.codeclimate.com/v1/badges/d8f1da142654290dc827/maintainability" /></a> [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d87c3f64e7da4a0e83b6c31003e3728e)](https://www.codacy.com/manual/kunyuhe/Client-Management-System?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KunyuHe/Client-Management-System&amp;utm_campaign=Badge_Grade)
 
-This project is a webserver 
+This project is a webserver build for facilitating interactions between the Sales and Trading department and its clients. It features pushing trading request notifications from the server to relevant users, emailing clients with attachments, and visualizing client income time series.
 
 **Tech Stack:**
 
