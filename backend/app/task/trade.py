@@ -24,13 +24,11 @@ def background_thread():
                     continue
 
                 for client_obj in to_notify:
+                    now = datetime.now().strftime('%Y-%m-%d %I:%M %p')
                     for user_obj in client_obj.users:
                         TradeNamespace.get_socketio().emit(
-                            'hi',
-                            (f"Client {client_obj.name} requested to trade at "
-                             f"{datetime.now().strftime('%Y/%m/%d %I:%M:%S %p')}."),
-                            room=user_obj.name,
-                            namespace="/flask")
+                            'hi', f"客户{client_obj.name}于{now}提出交易需求",
+                            room=user_obj.name, namespace="/flask")
                     client_obj.trade = False
                 db.session.commit()
             except Exception as ex:
