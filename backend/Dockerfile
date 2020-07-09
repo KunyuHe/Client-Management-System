@@ -1,5 +1,5 @@
-FROM y
-MAINTAINER cpuRick
+FROM python:3
+MAINTAINER kunyu.he.uchicago@gmail.com
 
 
 ENV  TIME_ZONE Asia/Shanghai
@@ -14,6 +14,8 @@ WORKDIR /logs
 WORKDIR /projects
 
 COPY .  /projects/
+
+RUN apk --update add bash nano
 
 RUN pip --no-cache-dir install  -i ${PIPURL} --upgrade pip
 RUN pip --no-cache-dir install  -i ${PIPURL} -r requirements.txt

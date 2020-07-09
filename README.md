@@ -25,5 +25,8 @@ cd Client-Management-System
 
 ### Backend
 
-To run the backend properly, please first make sure you have `Docker Engine` installed. Follow the instructions [here](https://docs.docker.com/engine/install/).
+To run the backend properly, please first make sure you have `Docker Engine` installed. Follow the instructions [here](https://docs.docker.com/engine/install/) if it is not installed yet.
 
+#### Database
+
+insecure
