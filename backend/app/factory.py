@@ -7,6 +7,7 @@ from app.api.router import router
 from app.task.trade import TradeNamespace
 from app.utils.core import JSONEncoder, db
 from app.utils.emailsender import EmailSender
+from app.utils.util import create_dir
 from flask import Flask, Blueprint
 from flask_cors import CORS
 from flask_socketio import SocketIO
@@ -48,12 +49,10 @@ def create_app(config_name, config_path=None):
     db.init_app(app)
 
     # 日志文件目录
-    if not os.path.exists(app.config['LOGGING_PATH']):
-        os.mkdir(app.config['LOGGING_PATH'])
+    create_dir(app.config['LOGGING_PATH'])
 
     # 报表文件目录
-    if not os.path.exists(app.config['REPORT_PATH']):
-        os.mkdir(app.config['REPORT_PATH'])
+    create_dir(app.config['REPORT_PATH'])
 
     # 日志设置
     with open(app.config['LOGGING_CONFIG_PATH'], 'r', encoding='utf-8') as f:
@@ -94,6 +93,12 @@ def read_yaml(config_name, config_path):
         raise ValueError('请输入正确的配置名称或配置文件路径！')
 
 
+def register_form(app, router_api, url, method, view_func):
+    if method in router_api.__methods__:
+        app.add_url_rule('{}<string:key>'.format(url), view_func=view_func,
+                         methods=[method, ])
+
+
 def register_api(app, routers):
     for router_api in routers:
         if isinstance(router_api, Blueprint):
@@ -107,16 +112,11 @@ def register_api(app, routers):
                 if 'GET' in router_api.__methods__:
                     app.add_url_rule(url, defaults={'key': None},
                                      view_func=view_func, methods=['GET', ])
-                    app.add_url_rule('{}<string:key>'.format(url),
-                                     view_func=view_func, methods=['GET', ])
+                    register_form(app, router_api, url, "GET", view_func)
                 if 'POST' in router_api.__methods__:
                     app.add_url_rule(url, view_func=view_func,
                                      methods=['POST', ])
-                if 'PUT' in router_api.__methods__:
-                    app.add_url_rule('{}<string:key>'.format(url),
-                                     view_func=view_func, methods=['PUT', ])
-                if 'DELETE' in router_api.__methods__:
-                    app.add_url_rule('{}<string:key>'.format(url),
-                                     view_func=view_func, methods=['DELETE', ])
+                register_form(app, router_api, url, "PUT", view_func)
+                register_form(app, router_api, url, "DELETE", view_func)
             except Exception as e:
                 raise ValueError(e)

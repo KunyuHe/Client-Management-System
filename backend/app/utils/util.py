@@ -1,3 +1,4 @@
+import os
 import re
 from collections import Iterable
 from functools import wraps
@@ -9,6 +10,11 @@ from flask import jsonify
 
 def get_root_dir():
     return Path(__file__).parent.parent.parent.parent
+
+
+def create_dir(dir_path):
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
 
 
 def model_to_dict(result):

@@ -3,9 +3,8 @@ import uuid
 from datetime import datetime
 
 from app.utils.response import ResponseCode
-from app.utils.util import get_root_dir
+from app.utils.util import get_root_dir, create_dir
 from flask import send_from_directory
-import json
 
 
 class FileTool:
@@ -26,8 +25,7 @@ class FileTool:
         self.user_dir = get_root_dir() / f"static/{user_name}"
 
     def save(self, file, res):
-        if not os.path.exists(self.user_dir):
-            os.makedirs(self.user_dir)
+        create_dir(self.user_dir)
 
         if not file:
             res.update(code=ResponseCode.NoFileFound)
@@ -54,7 +52,8 @@ class FileTool:
                          'filename': filename})
         return res.data
 
-    def get(self, filename="20200705_172504-e6eef7a541ab4eb7a632b62b8b636a7a.xlsx"):
+    def get(self):
+        filename = ''
         response = send_from_directory(self.user_dir, filename,
                                        as_attachment=True)
         return response
