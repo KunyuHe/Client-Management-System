@@ -60,9 +60,7 @@ def route(bp, *args, **kwargs):
             # 响应函数返回字节
             elif isinstance(rv, bytes):
                 rv = rv.decode('utf-8')
-                return jsonify(rv)
-            else:
-                return jsonify(rv)
+            return jsonify(rv)
 
         return wrapper
 
