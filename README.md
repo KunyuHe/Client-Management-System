@@ -1,3 +1,3 @@
 # 客户管理系统（Client Management System, CMS）
 
-<a href="https://codeclimate.com/github/KunyuHe/Client-Management-Webserver/maintainability"><img src="https://api.codeclimate.com/v1/badges/94c8f996bf201cbb0b17/maintainability" /></a>
+<a href="https://codeclimate.com/github/KunyuHe/Client-Management-Webserver/maintainability"><img src="https://api.codeclimate.com/v1/badges/94c8f996bf201cbb0b17/maintainability" /></a> [![Codacy Badge](https://app.codacy.com/project/badge/Grade/9a564f70557341fc8135319fd258d361)](https://www.codacy.com/manual/kunyuhe/Client-Management-Webserver?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KunyuHe/Client-Management-Webserver&amp;utm_campaign=Badge_Grade)
