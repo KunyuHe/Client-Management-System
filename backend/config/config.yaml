@@ -25,11 +25,19 @@ COMMON: &common #标识
   # 响应消息
   RESPONSE_MESSAGE: ./config/msg.yaml
 
+<<<<<<< Updated upstream
   SEND_EMAIL: # Configure with your email host
     ADDRESS:
     AUTHCODE:
     PORT:
     HOST:
+=======
+  SEND_EMAIL:
+    ADDRESS: '1218686033@qq.com'
+    AUTHCODE: 'mjwfepunbfkxjfci'
+    PORT: 465
+    HOST: 'smtp.qq.com'
+>>>>>>> Stashed changes
 
 
 
@@ -43,4 +51,9 @@ STAGING: &staging
 
 PRODUCTION: &production
   <<: *common
+<<<<<<< Updated upstream
   SECRET_KEY: <your-key>
+=======
+  SECRET_KEY: mdd1##$$%^!DSA#FDSF
+  REDIS_HOST: flask_redis
+>>>>>>> Stashed changes
