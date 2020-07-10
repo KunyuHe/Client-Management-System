@@ -30,7 +30,7 @@ export function handleScrollHeader (callback) {
         if (delta === 0) {
           return false
         }
-        direction = delta > 0 ? 'down' : 'up';
+        direction = delta > 0 ? 'down' : 'up'
         callback(direction)
         beforeScrollTop = afterScrollTop
       }, 50)
