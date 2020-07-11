@@ -1,12 +1,9 @@
-import logging
 from datetime import datetime
 from threading import Lock
 
 from app.models.model import Client
 from app.utils.core import db
 from flask_socketio import Namespace, join_room, leave_room
-
-logger = logging.getLogger(__name__)
 
 THREAD = None
 THREAD_LOCK = Lock()
@@ -55,7 +52,6 @@ class TradeNamespace(Namespace):
                     background_thread)
 
     def on_disconnect(self):
-        logger.info("Disconnected")
         global THREAD_LOCK, CONNECTIONS
         with THREAD_LOCK:
             CONNECTIONS -= 1

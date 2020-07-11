@@ -13,6 +13,9 @@ class FileTool:
     __cnt_limit = 50
     __logger = None
 
+    def __init__(self, user_name):
+        self.user_dir = get_root_dir() / f"static/{user_name}"
+
     @property
     def logger(self):
         return self.__logger
@@ -20,9 +23,6 @@ class FileTool:
     @logger.setter
     def logger(self, logger):
         self.__logger = logger
-
-    def __init__(self, user_name):
-        self.user_dir = get_root_dir() / f"static/{user_name}"
 
     def save(self, file, res):
         create_dir(self.user_dir)
@@ -48,12 +48,13 @@ class FileTool:
         filename = (f"{datetime.now().strftime('%Y%m%d_%H%M%S')}-"
                     f"{str(uuid.uuid4().hex)}.{suffix}")
         file.save(self.user_dir / filename)
-        res.update(data={'cnt': len(files),
-                         'filename': filename})
+        res.update(data={'cnt': len(files)})
         return res.data
 
     def get(self):
-        filename = ''
-        response = send_from_directory(self.user_dir, filename,
-                                       as_attachment=True)
-        return response
+        files = os.listdir(self.user_dir)
+        self.logger.info(files)
+        with open(self.user_dir / files[-1], 'rb') as file:
+            return file.read()
+        # response = send_from_directory(self.user_dir, files[-1], as_attachment=True)
+        # return response

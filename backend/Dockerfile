@@ -17,5 +17,4 @@ COPY . /projects/
 RUN pip --no-cache-dir install  -i ${PIPURL} --upgrade pip
 RUN pip --no-cache-dir install  -i ${PIPURL} -r requirements.txt
 
-RUN chmod 777 -R ./*
-CMD ./run.sh
+CMD python run.py
