@@ -4,6 +4,8 @@
 
 This project is a webserver build for facilitating interactions between the Sales and Trading department and its clients. It features pushing trading request notifications from the server to relevant users, emailing clients with attachments, and visualizing client income time series.
 
+**Live demo: http://81.70.5.121/**
+
 **Tech Stack:**
 
 - Back-end: `Flask`
@@ -110,3 +112,46 @@ The `-p` option maps container ports to host ports. The first port is the port o
 ### Frontend
 
 To set up the frontend properly, make sure you have `Node.js` (with `npm`), `yarn`, and `nginx` installed. Follow the instructions [here](https://nodejs.org/en/download/), [here](https://classic.yarnpkg.com/en/docs/install/#windows-stable), and [here](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/) respectively.
+
+Navigate to `/frontend/`. Install the frontend dependencies, complies and minifies for production with:
+
+```console
+yarn install
+yarn build
+```
+
+This would generate a `/dist/` directory that can be rendered directly from the `nginx` server. After installing `nginx`, navigate to `/usr/local/etc/nginx/` to edit the file `nginx.conf` and create an entry for our application. An example:
+
+````conf
+    server {
+        listen       80;
+        server_name  localhost;
+
+        access_log  logs/host.access.log  main;
+
+        location / {
+            root   html/dist;
+            index  index.html index.htm;
+        }
+
+        location ~ .*\.(js|css|ico|png|jpg|eot|svg|ttf|woff|html) {
+        root html/dist/;
+        expires  30d;
+    }
+````
+
+According to the configuration, I should copy the `/dist/` subdirectory to `/usr/local/etc/nginx/html/`. Navigate to the target directory and run:
+
+```console
+cp -r <your-path-to-project-root>/frontend/dist ./
+```
+
+Now, you should be able to visit the webserver at http://localhost:80/.
+
+## Features
+
+
+
+## License
+
+This project is released under [GNU General Public License v3.0](./LICENSE).
