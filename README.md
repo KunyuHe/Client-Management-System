@@ -105,11 +105,8 @@ docker build -t <flask-container>:<flask-container-tag> .
 docker run -d -p 5000:5000 --name <flask-container>:<flask-container-tag> --network <docker-network>
 ```
 
-The `-p` option maps container ports to host ports. The first port is the port on the host machine, and the one on the right is the port inside the container. We expose port 5000 in the container on port 5000 in the host.
+The `-p` option maps container ports to host ports. The first port is the port on the host machine, and the one on the right is the port inside the container. We expose port 5000 in the container on port 5000 in the host. To make sure the `Flask` server container is up and running, run `docker ps`.
 
-To make sure the `Flask` server container is up and running, run:
+### Frontend
 
-```console
-docker ps
-```
-
+To set up the frontend properly, make sure you have `Node.js` (with `npm`), `yarn`, and `nginx` installed. Follow the instructions [here](https://nodejs.org/en/download/), [here](https://classic.yarnpkg.com/en/docs/install/#windows-stable), and [here](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/) respectively.
