@@ -2,7 +2,7 @@ FROM python:3
 MAINTAINER kunyu.he.uchicago@gmail.com
 
 RUN apt-get update
-RUN apt-get -y install nano vim
+RUN apt-get -y install nano
 
 ENV  TIME_ZONE Asia/Shanghai
 ENV PIPURL "https://pypi.tuna.tsinghua.edu.cn/simple"
