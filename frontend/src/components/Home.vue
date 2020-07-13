@@ -2,11 +2,11 @@
 <a-layout id="home">
   <a-layout-sider v-model="collapsed" :trigger="null" collapsible>
     <div class="logo">
-      <img src="../assets/logo_min.png" width="40px" alt="">
+      <img src="../assets/logo.png" width="40px" alt="">
       <h1 v-if="!collapsed">CMS</h1>
     </div>
 
-    <a-menu theme="dark" mode="inline" :selectedKeys="activePath" :default-selected-keys="activePath">
+    <a-menu mode="inline" theme="dark" :default-selected-keys="['1']" :selected-keys="[index]">
       <a-menu-item v-for="item in userMenus" :key="item.index" @click="saveIndex(item.index)">
         <a-icon :type="item.icon" />
         <span>{{item.title}}</span>
@@ -56,14 +56,11 @@ import {
   userInfo
 } from '../api/api'
 
-const activePath = ['1']
-
 export default {
   data () {
     return {
       collapsed: false,
-      activePath,
-      currMenu: '',
+      index: '1',
       userMenus: [{
         index: 1,
         icon: 'user',
@@ -98,7 +95,10 @@ export default {
   },
 
   mounted () {
-    const index = window.sessionStorage.getItem('index')
+    var index = window.sessionStorage.getItem('index')
+    if (index === null) {
+      index = 1
+    }
     this.saveIndex(index)
     this.$socket.emit('hi', {
       subscribe: true
@@ -108,7 +108,6 @@ export default {
   sockets: { // 通过vue实例对象sockets实现组件中的事件监听
     connect () { // socket的connect事件
     },
-
     hi (data) { // 后端按主题名推送的消息数据
       this.notification = data
       this.openNotification()
@@ -131,9 +130,8 @@ export default {
     },
 
     saveIndex (index) {
-      window.sessionStorage.setItem('index', index)
-      this.activePath = []
-      this.activePath.push(index)
+      window.sessionStorage.setItem('index', index.toString())
+      this.index = index.toString()
     },
 
     logout () {
@@ -160,6 +158,7 @@ export default {
       }
     }
   },
+
   destroyed () {
     this.$socket.emit('leave', {
       user: this.currUser
