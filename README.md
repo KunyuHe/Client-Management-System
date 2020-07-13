@@ -73,7 +73,7 @@ docker network connect <docker-network> <psql-container>
 
 #### Flask Server
 
-Before building the `Docker` image, configure the `Flask` server with the correct database URI and secret keys. Open [`/backend/config/config.yaml`](./backend/config/config.yaml) and make change to the following sections:
+Before building the `Docker` image, configure the `Flask` server with the correct database URI and secret keys. Open [`backend/config/config.yaml`](./backend/config/config.yaml) and make change to the following sections:
 
 ```yaml
 COMMON: &common
@@ -104,23 +104,23 @@ Run the following under `/backend/` (under the same directory as the [Dockerfiil
 
 ```console
 docker build -t <flask-container>:<flask-container-tag> .
-docker run -d -p 5000:5000 --name <flask-container>:<flask-container-tag> --network <docker-network>
+docker run -d -p 5000:5000 --network <docker-network> <docker-image-id>
 ```
 
-The `-p` option maps container ports to host ports. The first port is the port on the host machine, and the one on the right is the port inside the container. We expose port 5000 in the container on port 5000 in the host. To make sure the `Flask` server container is up and running, run `docker ps`.
+`<docker-image-id>` can be retrieved with command `docker images`. The `-p` option maps container ports to host ports. The first port is the port on the host machine, and the one on the right is the port inside the container. We expose port 5000 in the container on port 5000 in the host. To make sure the `Flask` server container is up and running, run `docker ps`.
 
 ### Frontend
 
 To set up the frontend properly, make sure you have `Node.js` (with `npm`), `yarn`, and `nginx` installed. Follow the instructions [here](https://nodejs.org/en/download/), [here](https://classic.yarnpkg.com/en/docs/install/#windows-stable), and [here](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/) respectively.
 
-Before building for production, edit [`/frontend/src/api/api.js`](./frontend/src/api/api.js) and change the variable `url` to http://localhost:port-exposed-earlier. Now, navigate back to `/frontend/`. Install the frontend dependencies, complies and minifies for production with:
+Before building for production, edit [`frontend/src/api/api.js`](./frontend/src/api/api.js) and change the variable `url` to http://localhost:port-exposed-earlier. Now, navigate back to `frontend/`. Install the frontend dependencies, complies and minifies for production with:
 
 ```console
 yarn install
 yarn build
 ```
 
-This would generate a `/dist/` directory that can be rendered directly from the `nginx` server. After installing `nginx`, navigate to `/usr/local/etc/nginx/` to edit the file `nginx.conf` and create an entry for our application. An example:
+This would generate a `dist/` directory that can be rendered directly from the `nginx` server. After installing `nginx`, navigate to `/usr/local/etc/nginx/` to edit the file `nginx.conf` and create an entry for our application. An example:
 
 ````conf
     server {
@@ -140,7 +140,7 @@ This would generate a `/dist/` directory that can be rendered directly from the 
     }
 ````
 
-According to the configuration, we should copy the `/dist/` subdirectory to `/usr/local/etc/nginx/html/` and reload `nginx`. Navigate to the target directory and run:
+According to the configuration, we should copy the `dist/` subdirectory to `/usr/local/etc/nginx/html/` and reload `nginx`. Navigate to the target directory and run:
 
 ```console
 cp -r <your-path-to-project-root>/frontend/dist ./
