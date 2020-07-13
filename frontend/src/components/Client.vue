@@ -5,7 +5,7 @@
     <a-table :rowKey="record => record.id" :columns="columns" :data-source="resultQuery" :pagination="{ pageSize: 10 }">
       <span slot="action" slot-scope="text, record">
         <a-col :span="2">
-          <a-button type="danger" @click="selectedClient = record, showChart(record)">
+          <a-button type="danger" @click="selectedClient = record, showChart()">
             查看客户收入曲线
           </a-button>
         </a-col>
@@ -188,13 +188,12 @@ export default {
         })
     },
 
-    checkIncomes (record) {
+    checkIncomes () {
       const clientParams = {
-        id: record.id
+        id: this.selectedClient.id
       }
       getIncomes(clientParams)
         .then((res) => {
-          console.log(res)
           if (res.data.code === 0) {
             this.xValue = res.data.data.date
             this.yValue = res.data.data.value
@@ -319,8 +318,8 @@ export default {
       })
     },
 
-    showChart (record) {
-      this.checkIncomes(record)
+    showChart () {
+      this.checkIncomes()
       this.chartVisible = true
       this.openEchart()
     },
@@ -331,12 +330,12 @@ export default {
         if (res.code !== 0) {
           this.$message.error(res.msg)
         } else {
-          this.$message.success('Email successfully sent.')
+          this.$message.success('邮件发送成功！')
           this.draftVisible = false
           this.clearForm()
         }
       } else if (info.file.status === 'uploading') {
-        this.$message.loading('Sending email. Please wait.')
+        this.$message.loading('邮件发送中，请稍候。')
       }
     },
 

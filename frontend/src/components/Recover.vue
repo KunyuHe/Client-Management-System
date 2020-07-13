@@ -93,7 +93,6 @@ export default {
     },
 
     recoverSuccess (res) {
-      console.log(res)
       this.$router.push({
         path: '/hello/login'
       })

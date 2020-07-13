@@ -113,7 +113,7 @@ The `-p` option maps container ports to host ports. The first port is the port o
 
 To set up the frontend properly, make sure you have `Node.js` (with `npm`), `yarn`, and `nginx` installed. Follow the instructions [here](https://nodejs.org/en/download/), [here](https://classic.yarnpkg.com/en/docs/install/#windows-stable), and [here](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/) respectively.
 
-Navigate to `/frontend/`. Install the frontend dependencies, complies and minifies for production with:
+Before building for production, edit [`/frontend/src/api/api.js`](./frontend/src/api/api.js) and change the variable `url` to http://localhost:port-exposed-earlier. Now, navigate back to `/frontend/`. Install the frontend dependencies, complies and minifies for production with:
 
 ```console
 yarn install
@@ -140,10 +140,11 @@ This would generate a `/dist/` directory that can be rendered directly from the 
     }
 ````
 
-According to the configuration, I should copy the `/dist/` subdirectory to `/usr/local/etc/nginx/html/`. Navigate to the target directory and run:
+According to the configuration, we should copy the `/dist/` subdirectory to `/usr/local/etc/nginx/html/` and reload `nginx`. Navigate to the target directory and run:
 
 ```console
 cp -r <your-path-to-project-root>/frontend/dist ./
+nginx -s reload
 ```
 
 Now, you should be able to visit the webserver at http://localhost:80/.
