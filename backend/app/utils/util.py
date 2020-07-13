@@ -6,6 +6,7 @@ from pathlib import Path
 
 from app.utils.response import ResMsg
 from flask import jsonify
+from flask.wrappers import Response
 
 
 def get_root_dir():
@@ -60,6 +61,9 @@ def route(bp, *args, **kwargs):
                     return jsonify(rv[0]), rv[1], rv[2]
                 else:
                     return jsonify(rv[0]), rv[1]
+            # 响应函数已经返回Response，不需要jsonify
+            if isinstance(rv, Response):
+                return rv
             # 响应函数返回字节
             if isinstance(rv, bytes):
                 rv = rv.decode('utf-8')

@@ -96,13 +96,12 @@ def refresh_token():
     return res.data
 
 
-@route(bp, '/recover', methods=["POST"])
+@route(bp, '/recover', methods=["GET"])
 def recover_password():
     res = ResMsg()
 
-    obj = request.get_json(force=True)
-    email = obj.get("email", None)
-    if not obj or not email:
+    email = request.args.get("email")
+    if not email:
         res.update(code=ResponseCode.InvalidParameter)
         return res.data
 
@@ -158,18 +157,36 @@ def upload():
     name = session["user_name"]
     file = request.files.get('file', None)
     file_tool = FileTool(name)
-    file_tool.logger = logger
 
     return file_tool.save(file, res)
 
 
-@route(bp, '/download', methods=["GET"])
-def download():
+@route(bp, '/process', methods=["POST"])
+@login_required
+def process():
     res = ResMsg()
 
     name = session["user_name"]
     file_tool = FileTool(name)
-    file_tool.logger = logger
 
-    res.update(data=file_tool.get())
+    obj = request.get_json(force=True)
+    filename = obj.get("filename")
+    if not filename:
+        res.update(code=ResponseCode.InvalidParameter)
+
+    text = obj.get("text", None)
+    if not text:
+        text = "默认插入文本"
+
+    file_tool.process(filename, text)
     return res.data
+
+
+@route(bp, '/download', methods=["GET"])
+@login_required
+def download():
+    name = session["user_name"]
+    file_tool = FileTool(name)
+    filename = request.args.get("filename")
+
+    return file_tool.get(filename)

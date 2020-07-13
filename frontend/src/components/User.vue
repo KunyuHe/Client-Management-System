@@ -46,6 +46,34 @@
           </a-card>
         </a-col>
 
+        <a-col :span="8">
+          <a-form :form="form">
+            <a-form-item>
+              <a-textarea placeholder="请输入要插入的文本" v-decorator="['text']" :rows="6" />
+            </a-form-item>
+
+            <a-form-item>
+              <a-button
+                type="primary"
+                htmlType="submit"
+                class="process-button"
+                @click.stop.prevent="handleProcess"
+              >
+                处理文件
+              </a-button>
+
+              <a-button
+                type="primary"
+                class="download-button"
+                @click.stop.prevent="handleDownload"
+              >
+                下载文件
+              </a-button>
+            </a-form-item>
+
+          </a-form>
+        </a-col>
+
       </a-row>
     </a-card>
   </div>
@@ -57,6 +85,7 @@ import Clock from 'vue-clock2'
 import {
   userInfo,
   url,
+  processFile,
   getFile
 } from '../api/api'
 
@@ -66,6 +95,7 @@ export default {
   },
   data () {
     return {
+      form: this.$form.createForm(this),
       currUser: { name: '用户', n_clients: 0 },
       headers: {
         Authorization: window.sessionStorage.getItem('Authorization')
@@ -96,26 +126,40 @@ export default {
     },
 
     handleChange (info) {
-      console.log(info)
       if (info.file.status === 'done') {
         const res = info.file.response
         if (res.code !== 0) {
           this.$message.error(res.msg)
         } else {
-          this.$message.success(`${info.file.name} uploaded successfully.`)
+          this.$message.success(`${info.file.name}上传成功！`)
           this.fileCnt = res.data.cnt
           this.fileName = res.data.filename
         }
       } else if (info.file.status === 'uploading') {
-        this.$message.loading(`Uploading ${info.file.name}`)
+        this.$message.loading(`${info.file.name}上传中，请稍候。`)
       }
     },
 
-    handleDownload (filename) {
-      getFile()
+    handleProcess () {
+      const data = { filename: this.fileName, text: this.form.getFieldValue('text') }
+      processFile(data)
+        .then((res) => {
+          if (res.data.code === 0) {
+            this.form.resetFields()
+            return this.$message.success('文件处理成功！')
+          } else {
+            return this.$message.error(res.data.msg)
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+
+    handleDownload () {
+      const params = { filename: this.fileName }
+      getFile(params)
         .then(res => {
-          console.log("I'm here")
-          console.log(res)
           const data = res.data
           const blob = new Blob([data], { type: 'application/vnd.ms-excel' })
           const link = document.createElement('a')
@@ -139,6 +183,14 @@ export default {
     }
     .clock {
         float: right;
+    }
+    .process-button {
+        float: left;
+        width: 40%;
+    }
+    .download-button {
+        float: right;
+        width: 40%;
     }
 }
 </style>
