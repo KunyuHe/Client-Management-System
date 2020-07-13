@@ -70,14 +70,13 @@ def remove():
     return res.data
 
 
-@route(bp, '/incomes', methods=["POST"])
+@route(bp, '/incomes', methods=["GET"])
 @login_required
 def get_incomes():
     res = ResMsg()
 
-    obj = request.get_json(force=True)
-    client_id = obj.get("id")
-    if not obj or not client_id:
+    client_id = request.args.get("id")
+    if not client_id:
         res.update(ResponseCode.InvalidParameter)
         return res.data
 
@@ -106,7 +105,6 @@ def email_client():
 
     user_name = session["user_name"]
     client_id = request.form.get("id")
-    logger.info(request.form)
     if not user_name or not client_id:
         res.update(code=ResponseCode.InvalidParameter)
         return res.data
@@ -123,6 +121,7 @@ def email_client():
     subject = request.form.get("subject", "")
     body = request.form.get("body", "")
     file = request.files.get('file', None)
+    logger.info(type(file))
     if file:
         result = EmailSender.send_email(client_obj.email, subject, body,
                                         file.stream.read(), file.filename)

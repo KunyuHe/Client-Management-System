@@ -52,11 +52,11 @@ export function login (data) {
   })
 }
 
-export function recover (data) {
+export function recover (params) {
   return service({
     url: '/user/recover',
-    method: 'post',
-    data: data
+    method: 'get',
+    params: params
   })
 }
 
@@ -65,6 +65,14 @@ export function userInfo (params) {
     url: '/user/info',
     method: 'get',
     params: params
+  })
+}
+
+export function processFile (data) {
+  return service({
+    url: '/user/process',
+    method: 'post',
+    data: data
   })
 }
 
@@ -85,10 +93,10 @@ export function getClients (params) {
   })
 }
 
-export function getIncomes (data) {
+export function getIncomes (params) {
   return service({
     url: '/client/incomes',
-    method: 'post',
-    data: data
+    method: 'get',
+    params: params
   })
 }
