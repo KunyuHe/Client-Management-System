@@ -9,7 +9,7 @@ const service = axios.create({
 
 // request拦截器
 service.interceptors.request.use(
-  config => {
+  (config) => {
     var Authorization = window.sessionStorage.getItem('Authorization')
     config.headers.Authorization = Authorization
     if (config.headers['Content-Type'] === 'multipart/form-data' || config.method !== 'post') {
@@ -19,14 +19,14 @@ service.interceptors.request.use(
 
     return config
   },
-  error => {
+  (error) => {
     Promise.reject(error)
   }
 )
 
 // response 拦截器
 service.interceptors.response.use(
-  response => {
+  (response) => {
     return response
   },
   error => {
