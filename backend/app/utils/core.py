@@ -9,8 +9,7 @@ db = SQLAlchemy()
 
 
 class JSONEncoder(BaseJSONEncoder):
-
-    def default(self, o):
+    def default(self, o): # pylint: disable=method-hidden
         """
         如有其他的需求可直接在下面添加
         :param o:
