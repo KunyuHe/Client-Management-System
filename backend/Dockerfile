@@ -1,7 +1,8 @@
 FROM python:3
 
-RUN apt-get update
-RUN apt-get -y install nano
+RUN apt-get update && apt-get -y install nano \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
 ENV  TIME_ZONE Asia/Shanghai
 ENV PIPURL "https://pypi.tuna.tsinghua.edu.cn/simple"
