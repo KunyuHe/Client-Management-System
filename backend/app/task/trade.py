@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from threading import Lock
 
@@ -8,6 +9,8 @@ from flask_socketio import Namespace, join_room, leave_room
 THREAD = None
 THREAD_LOCK = Lock()
 CONNECTIONS = 0
+
+logger = logging.getLogger(__file__)
 
 
 def background_thread():
