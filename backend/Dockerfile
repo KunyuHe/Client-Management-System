@@ -1,5 +1,4 @@
 FROM python:3
-MAINTAINER kunyu.he.uchicago@gmail.com
 
 RUN apt-get update
 RUN apt-get -y install nano
