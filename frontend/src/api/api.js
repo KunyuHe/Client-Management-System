@@ -40,7 +40,7 @@ export function register (data) {
   return service({
     url: '/user/register',
     method: 'post',
-    data: data
+    data
   })
 }
 
@@ -48,7 +48,7 @@ export function login (data) {
   return service({
     url: '/user/login',
     method: 'post',
-    data: data
+    data
   })
 }
 
@@ -56,7 +56,7 @@ export function recover (params) {
   return service({
     url: '/user/recover',
     method: 'get',
-    params: params
+    params
   })
 }
 
@@ -64,7 +64,7 @@ export function userInfo (params) {
   return service({
     url: '/user/info',
     method: 'get',
-    params: params
+    params
   })
 }
 
@@ -72,7 +72,7 @@ export function processFile (data) {
   return service({
     url: '/user/process',
     method: 'post',
-    data: data
+    data
   })
 }
 
@@ -80,7 +80,7 @@ export function getFile (params) {
   return service({
     url: '/user/download',
     method: 'get',
-    params: params,
+    params,
     responseType: 'blob'
   })
 }
@@ -89,7 +89,7 @@ export function getClients (params) {
   return service({
     url: '/user/clients',
     method: 'get',
-    params: params
+    params
   })
 }
 
@@ -97,6 +97,6 @@ export function getIncomes (params) {
   return service({
     url: '/client/incomes',
     method: 'get',
-    params: params
+    params
   })
 }

@@ -107,7 +107,7 @@ export default {
 
     requestFailed (err) {
       this.$notification.error({
-        message: 'Error',
+        message: '错误',
         description: ((err.response || {}).data || {}).message || '服务器未响应！请稍后再试。',
         duration: 4
       })
