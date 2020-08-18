@@ -150,3 +150,5 @@ pnpm-debug.log*
 *.sln
 *.sw?
 static
+
+/backend/config/config.yaml
